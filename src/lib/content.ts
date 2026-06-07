@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import rawContent from '../../content.json';
 
-const contentPath = path.join(process.cwd(), 'content.json');
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const contentPath = path.resolve(process.cwd(), 'content.json');
 
 export interface GalleryItem {
   url: string;
@@ -86,51 +87,16 @@ export interface SiteContent {
   adminPassword: string;
 }
 
-function getDefaultContent(): SiteContent {
-  return {
-    communityName: 'OneX SpaceTechnologies Private',
-    tagline: 'Beyond Boundaries. Beyond Limits.',
-    memberCount: 13285,
-    memberLastUpdate: null,
-    memberNextUpdate: null,
-    topMembers: [],
-    about: {
-      title: 'About OneX SpaceTechnologies',
-      description: '',
-      mission: '',
-      vision: '',
-    },
-    projectInfo: {
-      title: 'Project Ecosystem Value',
-      description: '',
-      value: 87562,
-      lastUpdate: null,
-      nextUpdate: null,
-    },
-    inspirational: {
-      quote: 'We build the future, one deployment at a time.',
-      author: 'OneX SpaceTechnologies',
-    },
-    services: [],
-    partners: [],
-    gallery: [],
-    courses: [],
-    certificates: [],
-    socialLinks: { discord: '', youtube: '', github: '', twitter: '' },
-    stats: { members: 13285, services: 0, projects: 0, projectsLastUpdate: null, projectsNextUpdate: null, events: 0 },
-    adminPassword: '',
-  };
-}
-
 export async function getContent(): Promise<SiteContent> {
   try {
-    const stat = fs.statSync(contentPath);
-    if (stat.size > MAX_FILE_SIZE) throw new Error('File too large');
-    const raw = fs.readFileSync(contentPath, 'utf-8');
-    return JSON.parse(raw);
-  } catch {
-    return getDefaultContent();
-  }
+    if (fs.existsSync(contentPath)) {
+      const stat = fs.statSync(contentPath);
+      if (stat.size > MAX_FILE_SIZE) throw new Error('File too large');
+      const raw = fs.readFileSync(contentPath, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch {}
+  return JSON.parse(JSON.stringify(rawContent)) as unknown as SiteContent;
 }
 
 export async function saveContent(content: SiteContent): Promise<void> {
