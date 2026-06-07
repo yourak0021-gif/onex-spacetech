@@ -16,12 +16,13 @@ const Services = dynamic(() => import('@/components/Services'), { ssr: false });
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 
 interface SitePreviewProps {
-  content: SiteContent;
+  minimal: Partial<SiteContent>;
   editMode?: boolean;
   onEditSection?: (section: string) => void;
 }
 
-export default function SitePreview({ content, editMode, onEditSection }: SitePreviewProps) {
+export default function SitePreview({ minimal, editMode, onEditSection }: SitePreviewProps) {
+  const content = minimal as Partial<SiteContent>;
   const sectionIds = ['hero', 'partners', 'stats', 'project-value', 'members', 'services', 'gallery'];
 
   const EditOverlay = ({ section }: { section: string }) => {
@@ -66,9 +67,9 @@ export default function SitePreview({ content, editMode, onEditSection }: SitePr
         <div className="relative" id="preview-hero">
           <SectionWrapper section="hero">
             <Hero
-              communityName={content.communityName}
-              tagline={content.tagline}
-              inspirational={content.inspirational}
+              communityName={minimal.communityName || ''}
+              tagline={minimal.tagline || ''}
+              inspirational={minimal.inspirational || { quote: '', author: '' }}
             />
           </SectionWrapper>
         </div>
@@ -81,19 +82,19 @@ export default function SitePreview({ content, editMode, onEditSection }: SitePr
 
         <div className="relative" id="preview-stats">
           <SectionWrapper section="stats">
-            <Stats memberCount={content.memberCount} stats={content.stats} />
+            <Stats memberCount={minimal.memberCount || 0} stats={minimal.stats || { members: 0, services: 0, projects: 0, events: 0 }} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-projects">
           <SectionWrapper section="projects">
-            <ProjectValue projectInfo={content.projectInfo} />
+            <ProjectValue projectInfo={minimal.projectInfo || { title: '', description: '', value: 0, lastUpdate: null, nextUpdate: null }} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-members">
           <SectionWrapper section="members">
-            <TopMembers members={content.topMembers} />
+            <TopMembers members={minimal.topMembers || []} />
           </SectionWrapper>
         </div>
 
@@ -111,7 +112,7 @@ export default function SitePreview({ content, editMode, onEditSection }: SitePr
 
         <CallToAction />
       </main>
-      <Footer communityName={content.communityName} socialLinks={content.socialLinks} />
+      <Footer communityName={minimal.communityName || ''} socialLinks={minimal.socialLinks || { discord: '', youtube: '', github: '', twitter: '' }} />
     </div>
   );
 }

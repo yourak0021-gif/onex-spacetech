@@ -4,6 +4,7 @@ import { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiChevronDown } from 'react-icons/hi';
 import type { Service } from '@/types/content';
+import { useContent } from '@/hooks/useContent';
 
 import {
   FaGamepad, FaCode, FaImage, FaVideo, FaPaintBrush, FaTrophy,
@@ -96,7 +97,9 @@ interface GroupedServices {
   [category: string]: Service[];
 }
 
-export default function Services({ services }: { services: Service[] }) {
+export default function Services({ services: propServices }: { services?: Service[] }) {
+  const fetchedServices = useContent((d: any) => d.services as Service[] | undefined);
+  const services: Service[] = propServices || fetchedServices || [];
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
