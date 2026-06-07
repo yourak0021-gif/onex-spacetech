@@ -44,10 +44,10 @@ export default function SitePreview({ content, editMode, onEditSection }: SitePr
   ];
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen bg-space-dark">
       <Particles />
-      <Navbar />
       <HorizontalScroll sections={sections} />
+      <Navbar />
     </div>
   );
 }

@@ -87,7 +87,7 @@ export default function HorizontalScroll({ sections }: Props) {
 
   return (
     <div
-      className="fixed inset-0 w-screen h-screen overflow-hidden bg-space-dark"
+      className="fixed inset-0 w-screen h-screen overflow-hidden z-10"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -116,7 +116,7 @@ export default function HorizontalScroll({ sections }: Props) {
       </div>
 
       {/* Navigation dots */}
-      <div className="fixed right-5 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+      <div className="fixed right-5 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2">
         {sections.map((s, i) => (
           <button
             key={s.id}
