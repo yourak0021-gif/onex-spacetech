@@ -3,8 +3,8 @@ import CoursesContent from './CoursesContent';
 
 export const dynamic = 'force-dynamic';
 
-export default function CoursesPage() {
-  const content = getContent();
+export default async function CoursesPage() {
+  const content = await getContent();
 
   return (
     <CoursesContent

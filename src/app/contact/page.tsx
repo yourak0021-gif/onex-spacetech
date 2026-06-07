@@ -5,8 +5,8 @@ import ContactContent from './ContactContent';
 
 export const dynamic = 'force-dynamic';
 
-export default function ContactPage() {
-  const content = getContent();
+export default async function ContactPage() {
+  const content = await getContent();
 
   return (
     <>

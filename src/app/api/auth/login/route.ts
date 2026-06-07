@@ -26,11 +26,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Password is required' }, { status: 400 });
     }
 
-    const content = getContent();
+    const content = await getContent();
 
     if (!content.adminPassword) {
       content.adminPassword = await hashPassword(password);
-      saveContent(content);
+      await saveContent(content);
       await setAuthCookie();
       return NextResponse.json({ success: true });
     }

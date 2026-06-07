@@ -3,11 +3,11 @@ import SitePreview from '@/components/SitePreview';
 
 export const dynamic = 'force-dynamic';
 
-export default function Home() {
-  let content = getContent();
-  content = incrementProjectValue(content);
-  content = incrementProjectsCount(content);
-  content = incrementMemberCount(content);
+export default async function Home() {
+  let content = await getContent();
+  content = await incrementProjectValue(content);
+  content = await incrementProjectsCount(content);
+  content = await incrementMemberCount(content);
 
   const { adminPassword, memberLastUpdate, memberNextUpdate, ...publicContent } = content;
   const result = { ...publicContent } as any;

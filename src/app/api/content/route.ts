@@ -16,10 +16,10 @@ function stripContent(content: SiteContent) {
 
 export async function GET() {
   try {
-    let content = getContent();
-    content = incrementProjectValue(content);
-    content = incrementProjectsCount(content);
-    content = incrementMemberCount(content);
+    let content = await getContent();
+    content = await incrementProjectValue(content);
+    content = await incrementProjectsCount(content);
+    content = await incrementMemberCount(content);
     return NextResponse.json(stripContent(content));
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -41,7 +41,7 @@ export async function PATCH(request: Request) {
   }
 
   try {
-    const current = getContent();
+    const current = await getContent();
     const body = await request.json();
     if (!body || typeof body !== 'object') {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
@@ -151,7 +151,7 @@ export async function PATCH(request: Request) {
       }));
     }
 
-    saveContent(current);
+    await saveContent(current);
     return NextResponse.json(stripContent(current));
   } catch {
     return NextResponse.json({ error: 'Failed to update content' }, { status: 500 });
