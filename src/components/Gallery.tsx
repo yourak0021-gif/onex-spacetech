@@ -1,17 +1,26 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, useInView } from 'framer-motion';
 import type { GalleryItem } from '@/types/content';
 
 export default function Gallery({ images }: { images: GalleryItem[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
+  const [inView, setInView] = useState(false);
   const [page, setPage] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); observer.unobserve(el); }
+    }, { threshold: 0.1 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const itemsPerView = 3;
   const totalSlides = images.length;
@@ -77,12 +86,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8 md:mb-12"
-        >
+        <div className={`text-center mb-8 md:mb-12 transition-all duration-500 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[15px]'}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] text-[11px] text-white/25 uppercase tracking-[0.3em] font-light mb-5">
             Explore
           </span>
@@ -92,7 +96,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
           <p className="text-white/30 max-w-xl mx-auto text-sm font-light">
             Capturing milestones across our journey
           </p>
-        </motion.div>
+        </div>
 
         <div className="relative select-none">
           <div
@@ -105,12 +109,14 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
             onPointerLeave={onPointerUp}
           >
             {images.map((item, i) => (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 25, scale: 0.95 }}
-                animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.04, ease: [0.25, 0.1, 0.25, 1] }}
                 className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative pointer-events-auto snap-start"
+                style={{
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? 'translateY(0) scale(1)' : 'translateY(25px) scale(0.95)',
+                  transition: `opacity 0.5s ${i * 0.04}s, transform 0.5s ${i * 0.04}s`,
+                }}
               >
                 <div
                   className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04] cursor-pointer"
@@ -135,7 +141,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
@@ -146,9 +152,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 disabled={page === 0}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60">
-                  <path d="M12 4l-6 6 6 6" />
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60"><path d="M12 4l-6 6 6 6" /></svg>
               </button>
 
               <div className="flex gap-2">
@@ -168,9 +172,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 disabled={page >= totalPages - 1}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60">
-                  <path d="M8 4l6 6-6 6" />
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60"><path d="M8 4l6 6-6 6" /></svg>
               </button>
             </div>
           )}
@@ -179,4 +181,3 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     </section>
   );
 }
-

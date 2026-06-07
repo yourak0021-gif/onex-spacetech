@@ -2,24 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 
-interface Star {
-  x: number;
-  y: number;
-  size: number;
-  opacity: number;
-  speed: number;
-  hue: number;
-}
-
-interface ShootingStar {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-}
-
 export default function Particles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -31,12 +13,10 @@ export default function Particles() {
     if (!ctx) return;
 
     let animationId: number;
-    let stars: Star[] = [];
-    let shootingStars: ShootingStar[] = [];
-    let lastFrame = 0;
-    let frameCount = 0;
+    let stars: { x: number; y: number; size: number; opacity: number; speed: number }[] = [];
     const isMobile = window.innerWidth < 768;
-    const SKIP = isMobile ? 2 : 1;
+    const isLowEnd = !matchMedia('(min-resolution: 1.5dppx)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SKIP = isMobile ? 3 : (isLowEnd ? 2 : 1);
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -44,111 +24,47 @@ export default function Particles() {
     };
 
     const initStars = () => {
-      const isMobile = window.innerWidth < 768;
-      const divisor = isMobile ? 8000 : 6000;
-      const maxStars = isMobile ? 60 : 180;
-      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / divisor), maxStars);
+      const maxStars = isMobile ? 25 : (isLowEnd ? 40 : 100);
+      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / (isMobile ? 12000 : 6000)), maxStars);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 1.2 + 0.2,
-        opacity: Math.random() * 0.4 + 0.08,
-        speed: Math.random() * 0.015 + 0.002,
-        hue: Math.random() > 0.92 ? (Math.random() > 0.5 ? 260 : 42) : 0,
+        size: Math.random() * 1.0 + 0.2,
+        opacity: Math.random() * 0.3 + 0.05,
+        speed: Math.random() * 0.012 + 0.002,
       }));
     };
 
-    const spawnShootingStar = () => {
-      if (shootingStars.length > 2) return;
-      shootingStars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height * 0.3,
-        vx: (Math.random() * 4 + 2) * (Math.random() > 0.5 ? 1 : -1),
-        vy: Math.random() * 2 + 1,
-        life: 0,
-        maxLife: 60 + Math.random() * 40,
-      });
-    };
-
+    let frameCount = 0;
     const draw = (timestamp: number) => {
       frameCount++;
       if (frameCount % SKIP !== 0) {
         animationId = requestAnimationFrame(draw);
         return;
       }
-
-      const dt = timestamp - lastFrame;
-      lastFrame = timestamp;
-
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const time = performance.now();
-
       stars.forEach((star) => {
         const twinkle = Math.sin(time * 0.001 * star.speed * 8) * 0.3 + 0.7;
-        const opacity = star.opacity * twinkle;
-
-        if (star.hue > 0) {
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.size * 1.5, 0, Math.PI * 2);
-          const hueColor = star.hue === 260 ? '107, 76, 230' : '201, 168, 76';
-          ctx.fillStyle = `rgba(${hueColor}, ${opacity * 0.3})`;
-          ctx.fill();
-        }
-
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * twinkle})`;
         ctx.fill();
       });
-
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        s.life++;
-        if (s.life >= s.maxLife) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        const tailX = s.x - s.vx * (s.life / s.maxLife) * 8;
-        const tailY = s.y - s.vy * (s.life / s.maxLife) * 8;
-        ctx.lineTo(tailX, tailY);
-        const alpha = (1 - s.life / s.maxLife) * 0.8;
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        s.x += s.vx;
-        s.y += s.vy;
-      }
-
       animationId = requestAnimationFrame(draw);
     };
 
     resize();
     initStars();
 
-    let shootingInterval: ReturnType<typeof setInterval> | undefined;
-
-    const startAfter = setTimeout(() => {
-      shootingInterval = setInterval(() => {
-        if (Math.random() > 0.6) spawnShootingStar();
-      }, 4000);
-
+    const startTimer = setTimeout(() => {
       animationId = requestAnimationFrame(draw);
-
-      window.addEventListener('resize', () => {
-        resize();
-        initStars();
-      });
-    }, 100);
+      window.addEventListener('resize', () => { resize(); initStars(); });
+    }, 200);
 
     return () => {
       cancelAnimationFrame(animationId);
-      clearTimeout(startAfter);
-      if (shootingInterval) clearInterval(shootingInterval);
+      clearTimeout(startTimer);
       window.removeEventListener('resize', resize);
     };
   }, []);

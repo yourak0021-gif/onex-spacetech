@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CursorGlow from '@/components/CursorGlow';
-import ScrollProgress from '@/components/ScrollProgress';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -56,8 +54,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-space-dark text-white antialiased font-sans" style={{ fontFamily: 'var(--font-inter), Inter, sans-serif' }}>
         <div className="grain-overlay" />
-        <CursorGlow />
-        <ScrollProgress />
         {children}
       </body>
     </html>

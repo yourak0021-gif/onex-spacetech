@@ -1,7 +1,7 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState, useMemo, useEffect } from 'react';
+
 interface Partner {
   id: number; name: string; logo: string; url: string; category: string; description: string; parentId?: number;
 }
@@ -80,6 +80,18 @@ function CategoryStrip({ cat, partners, icon }: { cat: string; partners: Partner
 }
 
 export default function Partners({ partners: data }: { partners: Partner[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); observer.unobserve(el); }
+    }, { threshold: 0.1 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   if (!data || data.length === 0) return null;
 
@@ -100,15 +112,14 @@ export default function Partners({ partners: data }: { partners: Partner[] }) {
   const row3 = allForWall.slice(third * 2);
 
   return (
-    <section className="relative py-24 md:py-28 overflow-hidden">
+    <section className="relative py-24 md:py-28 overflow-hidden" ref={ref}>
       <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-secondary/[0.01]" />
       <div className="absolute top-1/4 left-1/4 w-[800px] h-[800px] bg-primary/3 rounded-full blur-[300px]" />
       <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-secondary/3 rounded-full blur-[250px]" />
 
       <div className="relative z-10">
-        {/* Header */}
         <div className="text-center mb-12 px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="opacity-0 animate-[fadeSlideUp_0.5s_ease_forwards]">
             <span className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[11px] text-primary/60 uppercase tracking-[0.3em] font-light mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Trusted by Industry Leaders
@@ -119,38 +130,37 @@ export default function Partners({ partners: data }: { partners: Partner[] }) {
             <p className="text-sm text-white/30 max-w-2xl mx-auto font-light">
               {data.length} organizations across {categories.length} sectors.
             </p>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Multi-row logo wall */}
         <div className="space-y-5 mb-16">
           <style>{`
             @keyframes rollL { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
             @keyframes rollR { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
           `}</style>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+          <div style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.6s 0.1s' }}>
             <MarqueeRow partners={row1} speed={22} dir={1} />
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+          </div>
+          <div style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.6s 0.2s' }}>
             <MarqueeRow partners={row2} speed={35} dir={-1} />
-          </motion.div>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+          </div>
+          <div style={{ opacity: inView ? 1 : 0, transition: 'opacity 0.6s 0.3s' }}>
             <MarqueeRow partners={row3} speed={50} dir={1} />
-          </motion.div>
+          </div>
         </div>
 
-        {/* Category strips */}
         <div className="max-w-7xl mx-auto px-4 space-y-4">
           {categories.map(([cat, partners], idx) => (
-            <motion.div
+            <div
               key={cat}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: idx * 0.04 }}
+              style={{
+                opacity: inView ? 1 : 0,
+                transform: inView ? 'translateY(0)' : 'translateY(10px)',
+                transition: `opacity 0.35s ${idx * 0.04}s, transform 0.35s ${idx * 0.04}s`,
+              }}
             >
               <CategoryStrip cat={cat} partners={partners} icon={icons[cat] || '🏢'} />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

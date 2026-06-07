@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -58,9 +57,23 @@ const ratings = [
   4.7, 4.6, 4.4, 4.5,
 ];
 
+function useInViewObserver(ref: React.RefObject<HTMLElement | null>): boolean {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setInView(true); observer.unobserve(el); }
+    }, { threshold: 0.1 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return inView;
+}
+
 function Counter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInViewObserver(ref);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -127,43 +140,24 @@ export default function CoursesContent({ courses, certificates, communityName, s
         <div className="absolute bottom-0 right-1/3 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[120px] animate-pulse-glow" style={{ animationDelay: '2s' }} />
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className="opacity-0 animate-[fadeSlideUp_0.5s_ease_forwards]">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[11px] text-primary/60 uppercase tracking-[0.3em] font-light mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               Enroll Now — Limited Seats
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight leading-[1.08]"
-          >
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight leading-[1.08] opacity-0 animate-[fadeSlideUp_0.7s_0.1s_ease_forwards]">
             Invest in <span className="text-gradient">Your Future</span>
             <br />
             <span className="text-white/20 text-2xl sm:text-3xl md:text-4xl font-light">Master skills that matter</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-sm text-white/30 max-w-2xl mx-auto mb-10 font-light leading-relaxed"
-          >
+          <p className="text-sm text-white/30 max-w-2xl mx-auto mb-10 font-light leading-relaxed opacity-0 animate-[fadeSlideUp_0.7s_0.2s_ease_forwards]">
             {courses.length} industry-aligned courses with certificates. Learn from experts, build real projects, and earn verifiable credentials that open doors.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-6"
-          >
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-6 opacity-0 animate-[fadeSlideUp_0.7s_0.3s_ease_forwards]">
             <div className="text-center">
               <div className="text-2xl font-bold text-white tabular-nums"><Counter target={totalEnrollments} />+</div>
               <div className="text-[11px] text-white/20 uppercase tracking-wider mt-1">Enrollments</div>
@@ -183,34 +177,23 @@ export default function CoursesContent({ courses, certificates, communityName, s
               <div className="text-2xl font-bold text-white tabular-nums">4.7</div>
               <div className="text-[11px] text-white/20 uppercase tracking-wider mt-1">Avg Rating</div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="flex flex-wrap items-center justify-center gap-4"
-          >
+          <div className="flex flex-wrap items-center justify-center gap-4 opacity-0 animate-[fadeIn_0.5s_0.6s_ease_forwards]">
             <a href="#courses" onClick={(e) => { e.preventDefault(); document.querySelector('#courses')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-gradient px-7 py-2.5 rounded-full text-sm font-medium tracking-wider">
               Browse Courses ↓
             </a>
             <a href="#certificates" onClick={(e) => { e.preventDefault(); document.querySelector('#certificates')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-outline px-7 py-2.5 rounded-full text-sm font-medium tracking-wider text-white/50 hover:text-white/80">
               View Certificates
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       <main className="pb-20 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Trust / Guarantee bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-16 p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03]"
-          >
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mb-16 p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03] opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]">
             {[
               { icon: '🛡️', text: '30-Day Money-Back Guarantee' },
               { icon: '🎓', text: 'Industry-Recognized Certificates' },
@@ -222,18 +205,11 @@ export default function CoursesContent({ courses, certificates, communityName, s
                 <span className="font-light">{item.text}</span>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Popular pick */}
           {courses[featured] && (
-            <motion.div
-              id="courses"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-16"
-            >
+            <div id="courses" className="mb-16 opacity-0 animate-[fadeSlideUp_0.5s_ease_forwards]">
               <div className="flex items-center gap-2 mb-5">
                 <span className="text-xs text-amber-400/80 tracking-widest uppercase font-medium">⭐ Featured Pick</span>
                 <span className="h-px flex-1 bg-gradient-to-r from-amber-500/20 to-transparent" />
@@ -272,30 +248,24 @@ export default function CoursesContent({ courses, certificates, communityName, s
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Benefits */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16"
-          >
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]">
             {[
               { icon: '🎓', title: 'Expert-Led Curriculum', desc: 'Industry professionals with years of real-world experience teaching each course.' },
               { icon: '📜', title: 'Verifiable Credentials', desc: 'Unique verification codes. Shareable on LinkedIn, portfolio, and resume.' },
               { icon: '⚡', title: 'Hands-On Projects', desc: 'Production-grade assignments. Build a portfolio that proves your skills.' },
               { icon: '🔄', title: 'Lifetime Access', desc: 'One payment, forever access. All future updates and new content included.' },
-            ].map((item, i) => (
+            ].map((item) => (
               <div key={item.title} className="glass rounded-xl p-5 border border-white/[0.04] hover:border-primary/[0.08] transition-all duration-300 hover:-translate-y-0.5">
                 <span className="text-2xl mb-3 block">{item.icon}</span>
                 <h3 className="text-sm font-semibold text-white/80 mb-1">{item.title}</h3>
                 <p className="text-xs text-white/30 font-light leading-relaxed">{item.desc}</p>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Filter controls */}
           {courses.length > 0 && (
@@ -498,13 +468,7 @@ export default function CoursesContent({ courses, certificates, communityName, s
           )}
 
           {/* FAQ */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="mb-16"
-          >
+          <div className="mb-16 opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]">
             <div className="flex items-center gap-3 mb-8">
               <div className="flex items-center gap-2.5">
                 <span className="w-1 h-6 bg-white/20 rounded-full" />
@@ -546,16 +510,10 @@ export default function CoursesContent({ courses, certificates, communityName, s
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Bottom CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="text-center mt-16 p-8 md:p-12 rounded-2xl glass-strong border border-white/[0.04] relative overflow-hidden"
-          >
+          <div className="text-center mt-16 p-8 md:p-12 rounded-2xl glass-strong border border-white/[0.04] relative overflow-hidden opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-secondary/[0.02]" />
             <div className="relative z-10">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Still deciding?</h3>
@@ -571,16 +529,18 @@ export default function CoursesContent({ courses, certificates, communityName, s
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </main>
 
       {/* Floating sticky CTA */}
-      <motion.div
-        initial={{ y: 80, opacity: 0 }}
-        animate={showSticky ? { y: 0, opacity: 1 } : { y: 80, opacity: 0 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      <div
         className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
+        style={{
+          transform: showSticky ? 'translateY(0)' : 'translateY(80px)',
+          opacity: showSticky ? 1 : 0,
+          transition: 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out',
+        }}
       >
         <div className="max-w-6xl mx-auto px-4 pb-4 pointer-events-auto">
           <div className="glass-strong rounded-2xl border border-white/[0.06] p-3 flex items-center justify-between gap-3 backdrop-blur-xl bg-space-dark/90">
@@ -603,7 +563,7 @@ export default function CoursesContent({ courses, certificates, communityName, s
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <Footer communityName={communityName} socialLinks={socialLinks} />
     </div>
