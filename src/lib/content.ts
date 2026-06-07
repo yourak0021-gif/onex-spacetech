@@ -100,9 +100,13 @@ export async function getContent(): Promise<SiteContent> {
 }
 
 export async function saveContent(content: SiteContent): Promise<void> {
-  const tmp = contentPath + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(content, null, 2), 'utf-8');
-  fs.renameSync(tmp, contentPath);
+  try {
+    const tmp = contentPath + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(content, null, 2), 'utf-8');
+    fs.renameSync(tmp, contentPath);
+  } catch {
+    // Read-only filesystem (e.g. Vercel serverless) — silently skip
+  }
 }
 
 export async function incrementProjectValue(content: SiteContent): Promise<SiteContent> {
