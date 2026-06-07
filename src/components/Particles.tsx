@@ -34,6 +34,9 @@ export default function Particles() {
     let stars: Star[] = [];
     let shootingStars: ShootingStar[] = [];
     let lastFrame = 0;
+    let frameCount = 0;
+    const isMobile = window.innerWidth < 768;
+    const SKIP = isMobile ? 2 : 1;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -41,7 +44,10 @@ export default function Particles() {
     };
 
     const initStars = () => {
-      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 6000), 180);
+      const isMobile = window.innerWidth < 768;
+      const divisor = isMobile ? 8000 : 6000;
+      const maxStars = isMobile ? 60 : 180;
+      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / divisor), maxStars);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -65,6 +71,12 @@ export default function Particles() {
     };
 
     const draw = (timestamp: number) => {
+      frameCount++;
+      if (frameCount % SKIP !== 0) {
+        animationId = requestAnimationFrame(draw);
+        return;
+      }
+
       const dt = timestamp - lastFrame;
       lastFrame = timestamp;
 

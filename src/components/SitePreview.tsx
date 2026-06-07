@@ -1,17 +1,19 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Particles from '@/components/Particles';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import Partners from '@/components/Partners';
 import Stats from '@/components/Stats';
 import ProjectValue from '@/components/ProjectValue';
 import TopMembers from '@/components/TopMembers';
-import Services from '@/components/Services';
-import Gallery from '@/components/Gallery';
 import CallToAction from '@/components/CallToAction';
 import Footer from '@/components/Footer';
 import type { SiteContent } from '@/types/content';
+
+const Partners = dynamic(() => import('@/components/Partners'), { ssr: false });
+const Services = dynamic(() => import('@/components/Services'), { ssr: false });
+const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 
 interface SitePreviewProps {
   content: SiteContent;

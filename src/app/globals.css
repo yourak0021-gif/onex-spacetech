@@ -66,6 +66,20 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  .text-gradient {
+    animation: none;
+  }
+  .animate-pulse-glow,
+  .animate-ping-slow,
+  .animate-ping-slower {
+    animation-duration: 0.01ms !important;
+  }
+  .grain-overlay {
+    opacity: 0.015;
+  }
+}
+
 ::selection {
   background: rgba(107, 76, 230, 0.15);
   color: white;
