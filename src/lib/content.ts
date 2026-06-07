@@ -1,20 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import type { VercelKV } from '@vercel/kv';
 
 const contentPath = path.join(process.cwd(), 'content.json');
-const KV_KEY = 'site_content';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const isKvConfigured = () => !!process.env.KV_URL || !!process.env.KV_REST_API_URL;
-
-async function getKv(): Promise<VercelKV | null> {
-  try {
-    const { kv } = await import('@vercel/kv');
-    return kv;
-  } catch {
-    return null;
-  }
-}
 
 export interface GalleryItem {
   url: string;
@@ -135,15 +123,6 @@ function getDefaultContent(): SiteContent {
 }
 
 export async function getContent(): Promise<SiteContent> {
-  if (isKvConfigured()) {
-    try {
-      const kvs = await getKv();
-      if (kvs) {
-        const data = await kvs.get<SiteContent>(KV_KEY);
-        if (data) return data;
-      }
-    } catch {}
-  }
   try {
     const stat = fs.statSync(contentPath);
     if (stat.size > MAX_FILE_SIZE) throw new Error('File too large');
@@ -155,15 +134,6 @@ export async function getContent(): Promise<SiteContent> {
 }
 
 export async function saveContent(content: SiteContent): Promise<void> {
-  if (isKvConfigured()) {
-    try {
-      const kvs = await getKv();
-      if (kvs) {
-        await kvs.set(KV_KEY, content);
-        return;
-      }
-    } catch {}
-  }
   const tmp = contentPath + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(content, null, 2), 'utf-8');
   fs.renameSync(tmp, contentPath);
