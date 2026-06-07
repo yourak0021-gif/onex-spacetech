@@ -9,6 +9,10 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const inView = useInView(ref, { once: true });
   const [current, setCurrent] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef(0);
+  const dragOffset = useRef(0);
+  const lastMove = useRef(0);
 
   const itemsPerView = 3;
   const totalSlides = images.length;
@@ -45,6 +49,36 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     setCurrent(idx);
     scrollTo(idx);
   }, [scrollTo]);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    setDragging(true);
+    dragStart.current = e.clientX;
+    dragOffset.current = 0;
+    lastMove.current = e.clientX;
+    const el = containerRef.current;
+    if (el) el.style.scrollBehavior = 'auto';
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragging) return;
+    const delta = e.clientX - lastMove.current;
+    dragOffset.current += delta;
+    lastMove.current = e.clientX;
+    const el = containerRef.current;
+    if (el) el.scrollLeft -= delta;
+  }, [dragging]);
+
+  const onPointerUp = useCallback(() => {
+    if (!dragging) return;
+    setDragging(false);
+    const el = containerRef.current;
+    if (el) el.style.scrollBehavior = 'smooth';
+    if (Math.abs(dragOffset.current) > 80) {
+      if (dragOffset.current > 0) prev();
+      else next();
+    }
+    dragOffset.current = 0;
+  }, [dragging, prev, next]);
 
   useEffect(() => {
     if (!inView || totalSlides <= itemsPerView) return;
@@ -83,10 +117,15 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
           </p>
         </motion.div>
 
-        <div className="relative">
+        <div className="relative select-none">
           <div
             ref={containerRef}
-            className="flex gap-4 overflow-x-hidden scroll-smooth"
+            className={`flex gap-4 overflow-x-hidden ${dragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerLeave={onPointerUp}
+            style={{ touchAction: 'pan-y' }}
           >
             {images.map((item, i) => (
               <motion.div
@@ -94,7 +133,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 initial={{ opacity: 0, y: 25, scale: 0.95 }}
                 animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.04, ease: [0.25, 0.1, 0.25, 1] }}
-                className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative"
+                className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative pointer-events-auto"
               >
                 <div
                   className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04] cursor-pointer"
