@@ -18,12 +18,13 @@ export default function ScrollProgress() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[9998] h-[2px]">
       <div
-        className="h-full transition-[width] duration-100 ease-out"
+        className="h-full transition-[width] duration-50 ease-out"
         style={{
           width: `${progress * 100}%`,
           background: 'linear-gradient(90deg, #6B4CE6, #C9A84C, #6B4CE6)',
           backgroundSize: '200% 100%',
           boxShadow: '0 0 12px rgba(107,76,230,0.4)',
+          willChange: 'width',
         }}
       />
     </div>

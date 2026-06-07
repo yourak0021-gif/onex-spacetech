@@ -13,19 +13,21 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const dragStart = useRef(0);
   const dragOffset = useRef(0);
   const lastMove = useRef(0);
+  const velHistory = useRef<number[]>([]);
+  const momentumAnim = useRef<number | null>(null);
 
   const itemsPerView = 3;
   const totalSlides = images.length;
   const maxIndex = Math.max(0, totalSlides - itemsPerView);
 
-  const scrollTo = useCallback((index: number) => {
+  const scrollTo = useCallback((index: number, instant = false) => {
     const container = containerRef.current;
     if (!container) return;
     const child = container.children[index] as HTMLElement;
     if (!child) return;
     const gap = 16;
     const scrollLeft = child.offsetLeft - (index === 0 ? 0 : gap);
-    container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    container.scrollTo({ left: scrollLeft, behavior: instant ? 'auto' : 'smooth' });
   }, []);
 
   const next = useCallback(() => {
@@ -50,11 +52,30 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     scrollTo(idx);
   }, [scrollTo]);
 
+  const applyMomentum = useCallback((vel: number) => {
+    if (Math.abs(vel) < 30) return;
+    let remaining = vel;
+    const step = () => {
+      remaining *= 0.92;
+      const el = containerRef.current;
+      if (!el || Math.abs(remaining) < 1) return;
+      el.scrollLeft -= remaining;
+      momentumAnim.current = requestAnimationFrame(step);
+    };
+    if (momentumAnim.current) cancelAnimationFrame(momentumAnim.current);
+    momentumAnim.current = requestAnimationFrame(step);
+  }, []);
+
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     setDragging(true);
     dragStart.current = e.clientX;
     dragOffset.current = 0;
     lastMove.current = e.clientX;
+    velHistory.current = [];
+    if (momentumAnim.current) {
+      cancelAnimationFrame(momentumAnim.current);
+      momentumAnim.current = null;
+    }
     const el = containerRef.current;
     if (el) el.style.scrollBehavior = 'auto';
   }, []);
@@ -62,8 +83,10 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const onPointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragging) return;
     const delta = e.clientX - lastMove.current;
-    dragOffset.current += delta;
     lastMove.current = e.clientX;
+    dragOffset.current += delta;
+    velHistory.current.push(delta);
+    if (velHistory.current.length > 5) velHistory.current.shift();
     const el = containerRef.current;
     if (el) el.scrollLeft -= delta;
   }, [dragging]);
@@ -73,12 +96,24 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     setDragging(false);
     const el = containerRef.current;
     if (el) el.style.scrollBehavior = 'smooth';
-    if (Math.abs(dragOffset.current) > 80) {
+    const avgVel = velHistory.current.length > 0
+      ? velHistory.current.reduce((a, b) => a + b, 0) / velHistory.current.length
+      : 0;
+    if (Math.abs(dragOffset.current) > 60) {
       if (dragOffset.current > 0) prev();
       else next();
+    } else if (Math.abs(avgVel) > 1) {
+      applyMomentum(avgVel * 4);
     }
     dragOffset.current = 0;
-  }, [dragging, prev, next]);
+    velHistory.current = [];
+  }, [dragging, prev, next, applyMomentum]);
+
+  useEffect(() => {
+    return () => {
+      if (momentumAnim.current) cancelAnimationFrame(momentumAnim.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!inView || totalSlides <= itemsPerView) return;

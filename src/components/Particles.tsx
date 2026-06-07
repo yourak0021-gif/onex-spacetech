@@ -33,6 +33,7 @@ export default function Particles() {
     let animationId: number;
     let stars: Star[] = [];
     let shootingStars: ShootingStar[] = [];
+    let lastFrame = 0;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -40,14 +41,14 @@ export default function Particles() {
     };
 
     const initStars = () => {
-      const count = Math.floor((window.innerWidth * window.innerHeight) / 4000);
+      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 5000), 250);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 1.8 + 0.2,
-        opacity: Math.random() * 0.6 + 0.1,
-        speed: Math.random() * 0.03 + 0.005,
-        hue: Math.random() > 0.85 ? (Math.random() > 0.5 ? 260 : 42) : 0,
+        size: Math.random() * 1.5 + 0.2,
+        opacity: Math.random() * 0.5 + 0.1,
+        speed: Math.random() * 0.02 + 0.003,
+        hue: Math.random() > 0.9 ? (Math.random() > 0.5 ? 260 : 42) : 0,
       }));
     };
 
@@ -63,11 +64,16 @@ export default function Particles() {
       });
     };
 
-    const draw = () => {
+    const draw = (timestamp: number) => {
+      const dt = timestamp - lastFrame;
+      lastFrame = timestamp;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const time = performance.now();
+
       stars.forEach((star) => {
-        const twinkle = Math.sin(Date.now() * 0.001 * star.speed * 8) * 0.3 + 0.7;
+        const twinkle = Math.sin(time * 0.001 * star.speed * 8) * 0.3 + 0.7;
         const opacity = star.opacity * twinkle;
 
         if (star.hue > 0) {
@@ -80,14 +86,17 @@ export default function Particles() {
 
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        const brightness = star.hue > 0 ? 255 : 255;
-        ctx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, ${opacity})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
         ctx.fill();
       });
 
-      shootingStars = shootingStars.filter((s) => {
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const s = shootingStars[i];
         s.life++;
-        if (s.life >= s.maxLife) return false;
+        if (s.life >= s.maxLife) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
 
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
@@ -101,8 +110,7 @@ export default function Particles() {
 
         s.x += s.vx;
         s.y += s.vy;
-        return true;
-      });
+      }
 
       animationId = requestAnimationFrame(draw);
     };
@@ -112,9 +120,9 @@ export default function Particles() {
 
     const shootingInterval = setInterval(() => {
       if (Math.random() > 0.6) spawnShootingStar();
-    }, 3000);
+    }, 4000);
 
-    draw();
+    animationId = requestAnimationFrame(draw);
 
     window.addEventListener('resize', () => {
       resize();
@@ -132,6 +140,7 @@ export default function Particles() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 z-0 pointer-events-none"
+      style={{ willChange: 'transform' }}
     />
   );
 }

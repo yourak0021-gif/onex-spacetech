@@ -8,7 +8,6 @@ import { HiMenu, HiX } from 'react-icons/hi';
 const navLinks = [
   { label: 'Home', href: '#hero' },
   { label: 'Stats', href: '#stats' },
-  { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Courses', href: '/courses' },
   { label: 'Gallery', href: '#gallery' },
@@ -41,9 +40,10 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-[#06060f]/80 backdrop-blur-2xl border-b border-white/[0.03]'
+          ? 'bg-[#06060f]/80 backdrop-blur-2xl border-b border-white/[0.03] shadow-[0_1px_0_0_rgba(255,255,255,0.02)]'
           : 'bg-transparent'
       }`}
+      style={{ willChange: 'transform' }}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         <div className="flex items-center justify-between h-16">

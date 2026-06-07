@@ -15,7 +15,7 @@ interface HeroProps {
 
 function StaggerText({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: true, margin: '-20px' });
 
   const words = text.split(' ');
   let charIndex = 0;
@@ -31,14 +31,14 @@ function StaggerText({ text, className, delay = 0 }: { text: string; className?:
               return (
                 <motion.span
                   key={idx}
-                  initial={{ opacity: 0, y: 20, rotateX: -90 }}
-                  animate={inView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
+                  initial={{ opacity: 0, y: 30, rotateX: -90, filter: 'blur(4px)' }}
+                  animate={inView ? { opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)' } : {}}
                   transition={{
-                    duration: 0.4,
-                    delay: delay + idx * 0.03,
-                    ease: [0.25, 0.1, 0.25, 1],
+                    duration: 0.5,
+                    delay: delay + idx * 0.025,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
-                  style={{ display: 'inline-block' }}
+                  style={{ display: 'inline-block', willChange: 'transform, opacity' }}
                 >
                   {char}
                 </motion.span>

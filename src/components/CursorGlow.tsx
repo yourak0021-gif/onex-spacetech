@@ -21,13 +21,15 @@ export default function CursorGlow() {
     };
 
     const animate = () => {
-      currentX += (mouseX - currentX) * 0.05;
-      currentY += (mouseY - currentY) * 0.05;
-      glow.style.transform = `translate(${currentX - 200}px, ${currentY - 200}px)`;
+      const dx = mouseX - currentX;
+      const dy = mouseY - currentY;
+      currentX += dx * 0.08;
+      currentY += dy * 0.08;
+      glow.style.transform = `translate3d(${currentX - 200}px, ${currentY - 200}px, 0)`;
       rafId = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('mousemove', onMouse);
+    window.addEventListener('mousemove', onMouse, { passive: true });
     rafId = requestAnimationFrame(animate);
 
     return () => {
@@ -43,6 +45,7 @@ export default function CursorGlow() {
       style={{
         background: 'radial-gradient(circle, rgba(107,76,230,0.15) 0%, rgba(201,168,76,0.05) 40%, transparent 70%)',
         filter: 'blur(40px)',
+        willChange: 'transform',
       }}
     />
   );

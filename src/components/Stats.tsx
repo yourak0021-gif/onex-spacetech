@@ -42,8 +42,9 @@ function Counter({ target, suffix = '', label, icon }: { target: number; suffix?
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="text-center p-4 md:p-6"
+      style={{ willChange: 'transform, opacity' }}
     >
       <div className="text-xl text-white/20 mb-3 flex justify-center">
         {icon}
