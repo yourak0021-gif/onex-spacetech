@@ -2,8 +2,6 @@
 
 import { useRef, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { useContent } from '@/hooks/useContent';
-
 interface Partner {
   id: number; name: string; logo: string; url: string; category: string; description: string; parentId?: number;
 }
@@ -81,9 +79,7 @@ function CategoryStrip({ cat, partners, icon }: { cat: string; partners: Partner
   );
 }
 
-export default function Partners({ partners: propData }: { partners?: Partner[] }) {
-  const fetchedData = useContent((d: any) => d.partners as Partner[] | undefined);
-  const data: Partner[] = propData || fetchedData || [];
+export default function Partners({ partners: data }: { partners: Partner[] }) {
 
   if (!data || data.length === 0) return null;
 

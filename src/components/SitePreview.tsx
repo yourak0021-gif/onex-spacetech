@@ -16,13 +16,12 @@ const Services = dynamic(() => import('@/components/Services'), { ssr: false });
 const Gallery = dynamic(() => import('@/components/Gallery'), { ssr: false });
 
 interface SitePreviewProps {
-  minimal: Partial<SiteContent>;
+  content: Partial<SiteContent>;
   editMode?: boolean;
   onEditSection?: (section: string) => void;
 }
 
-export default function SitePreview({ minimal, editMode, onEditSection }: SitePreviewProps) {
-  const content = minimal as Partial<SiteContent>;
+export default function SitePreview({ content, editMode, onEditSection }: SitePreviewProps) {
   const sectionIds = ['hero', 'partners', 'stats', 'project-value', 'members', 'services', 'gallery'];
 
   const EditOverlay = ({ section }: { section: string }) => {
@@ -67,52 +66,52 @@ export default function SitePreview({ minimal, editMode, onEditSection }: SitePr
         <div className="relative" id="preview-hero">
           <SectionWrapper section="hero">
             <Hero
-              communityName={minimal.communityName || ''}
-              tagline={minimal.tagline || ''}
-              inspirational={minimal.inspirational || { quote: '', author: '' }}
+              communityName={content.communityName || ''}
+              tagline={content.tagline || ''}
+              inspirational={content.inspirational || { quote: '', author: '' }}
             />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-partners">
           <SectionWrapper section="partners">
-            <Partners partners={content.partners} />
+            <Partners partners={content.partners || []} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-stats">
           <SectionWrapper section="stats">
-            <Stats memberCount={minimal.memberCount || 0} stats={minimal.stats || { members: 0, services: 0, projects: 0, events: 0 }} />
+            <Stats memberCount={content.memberCount || 0} stats={content.stats || { members: 0, services: 0, projects: 0, events: 0 }} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-projects">
           <SectionWrapper section="projects">
-            <ProjectValue projectInfo={minimal.projectInfo || { title: '', description: '', value: 0, lastUpdate: null, nextUpdate: null }} />
+            <ProjectValue projectInfo={content.projectInfo || { title: '', description: '', value: 0, lastUpdate: null, nextUpdate: null }} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-members">
           <SectionWrapper section="members">
-            <TopMembers members={minimal.topMembers || []} />
+            <TopMembers members={content.topMembers || []} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-services">
           <SectionWrapper section="services">
-            <Services services={content.services} />
+            <Services services={content.services || []} />
           </SectionWrapper>
         </div>
 
         <div className="relative" id="preview-gallery">
           <SectionWrapper section="gallery">
-            <Gallery images={content.gallery} />
+            <Gallery images={content.gallery || []} />
           </SectionWrapper>
         </div>
 
         <CallToAction />
       </main>
-      <Footer communityName={minimal.communityName || ''} socialLinks={minimal.socialLinks || { discord: '', youtube: '', github: '', twitter: '' }} />
+      <Footer communityName={content.communityName || ''} socialLinks={content.socialLinks || { discord: '', youtube: '', github: '', twitter: '' }} />
     </div>
   );
 }

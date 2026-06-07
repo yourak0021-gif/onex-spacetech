@@ -391,7 +391,7 @@ export default function AdminPanel({ initialContent, initialAuthed }: { initialC
             >
               {activeTab === 'preview' && (
                 <div className="min-h-screen">
-                  <SitePreview minimal={content} editMode onEditSection={handleEditSection} />
+                  <SitePreview content={content} editMode onEditSection={handleEditSection} />
                 </div>
               )}
               {activeTab !== 'preview' && (

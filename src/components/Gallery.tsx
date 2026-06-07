@@ -3,11 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import type { GalleryItem } from '@/types/content';
-import { useContent } from '@/hooks/useContent';
 
-export default function Gallery({ images: propImages }: { images?: GalleryItem[] }) {
-  const fetchedImages = useContent((d: any) => d.gallery as GalleryItem[] | undefined);
-  const images: GalleryItem[] = propImages || fetchedImages || [];
+export default function Gallery({ images }: { images: GalleryItem[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
   const [page, setPage] = useState(0);
