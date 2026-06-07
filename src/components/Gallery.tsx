@@ -7,126 +7,68 @@ import type { GalleryItem } from '@/types/content';
 export default function Gallery({ images }: { images: GalleryItem[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
-  const [current, setCurrent] = useState(0);
+  const [page, setPage] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const dragStart = useRef(0);
-  const dragOffset = useRef(0);
-  const lastMove = useRef(0);
-  const velHistory = useRef<number[]>([]);
-  const momentumAnim = useRef<number | null>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
 
   const itemsPerView = 3;
   const totalSlides = images.length;
-  const maxIndex = Math.max(0, totalSlides - itemsPerView);
+  const totalPages = Math.max(1, Math.ceil(totalSlides / itemsPerView));
 
-  const scrollTo = useCallback((index: number, instant = false) => {
+  const scrollToPage = useCallback((p: number) => {
     const container = containerRef.current;
     if (!container) return;
-    const child = container.children[index] as HTMLElement;
-    if (!child) return;
-    const gap = 16;
-    const scrollLeft = child.offsetLeft - (index === 0 ? 0 : gap);
-    container.scrollTo({ left: scrollLeft, behavior: instant ? 'auto' : 'smooth' });
+    const first = container.children[p * itemsPerView] as HTMLElement;
+    if (!first) return;
+    first.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    setPage(p);
   }, []);
 
-  const next = useCallback(() => {
-    setCurrent((c) => {
-      const nextVal = c >= maxIndex ? 0 : c + 1;
-      scrollTo(nextVal);
-      return nextVal;
-    });
-  }, [maxIndex, scrollTo]);
-
-  const prev = useCallback(() => {
-    setCurrent((c) => {
-      const prevVal = Math.max(c - 1, 0);
-      scrollTo(prevVal);
-      return prevVal;
-    });
-  }, [scrollTo]);
-
-  const goToPage = useCallback((page: number) => {
-    const idx = page * itemsPerView;
-    setCurrent(idx);
-    scrollTo(idx);
-  }, [scrollTo]);
-
-  const applyMomentum = useCallback((vel: number) => {
-    if (Math.abs(vel) < 30) return;
-    let remaining = vel;
-    const step = () => {
-      remaining *= 0.92;
-      const el = containerRef.current;
-      if (!el || Math.abs(remaining) < 1) return;
-      el.scrollLeft -= remaining;
-      momentumAnim.current = requestAnimationFrame(step);
-    };
-    if (momentumAnim.current) cancelAnimationFrame(momentumAnim.current);
-    momentumAnim.current = requestAnimationFrame(step);
-  }, []);
+  const next = useCallback(() => scrollToPage(Math.min(page + 1, totalPages - 1)), [page, totalPages, scrollToPage]);
+  const prev = useCallback(() => scrollToPage(Math.max(page - 1, 0)), [page, scrollToPage]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
-    setDragging(true);
-    dragStart.current = e.clientX;
-    dragOffset.current = 0;
-    lastMove.current = e.clientX;
-    velHistory.current = [];
-    if (momentumAnim.current) {
-      cancelAnimationFrame(momentumAnim.current);
-      momentumAnim.current = null;
+    isDragging.current = true;
+    startX.current = e.clientX;
+    const container = containerRef.current;
+    if (container) {
+      scrollLeftStart.current = container.scrollLeft;
+      container.style.scrollBehavior = 'auto';
     }
-    const el = containerRef.current;
-    if (el) el.style.scrollBehavior = 'auto';
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragging) return;
-    const delta = e.clientX - lastMove.current;
-    lastMove.current = e.clientX;
-    dragOffset.current += delta;
-    velHistory.current.push(delta);
-    if (velHistory.current.length > 5) velHistory.current.shift();
-    const el = containerRef.current;
-    if (el) el.scrollLeft -= delta;
-  }, [dragging]);
-
-  const onPointerUp = useCallback(() => {
-    if (!dragging) return;
-    setDragging(false);
-    const el = containerRef.current;
-    if (el) el.style.scrollBehavior = 'smooth';
-    const avgVel = velHistory.current.length > 0
-      ? velHistory.current.reduce((a, b) => a + b, 0) / velHistory.current.length
-      : 0;
-    if (Math.abs(dragOffset.current) > 60) {
-      if (dragOffset.current > 0) prev();
-      else next();
-    } else if (Math.abs(avgVel) > 1) {
-      applyMomentum(avgVel * 4);
-    }
-    dragOffset.current = 0;
-    velHistory.current = [];
-  }, [dragging, prev, next, applyMomentum]);
-
-  useEffect(() => {
-    return () => {
-      if (momentumAnim.current) cancelAnimationFrame(momentumAnim.current);
-    };
+    if (!isDragging.current) return;
+    const dx = startX.current - e.clientX;
+    const container = containerRef.current;
+    if (container) container.scrollLeft = scrollLeftStart.current + dx;
   }, []);
 
+  const onPointerUp = useCallback(() => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const container = containerRef.current;
+    if (container) {
+      container.style.scrollBehavior = 'smooth';
+      const idx = Math.round(container.scrollLeft / (container.clientWidth / itemsPerView));
+      const p = Math.max(0, Math.min(Math.floor(idx / itemsPerView), totalPages - 1));
+      scrollToPage(p);
+    }
+  }, [totalPages, scrollToPage]);
+
   useEffect(() => {
-    if (!inView || totalSlides <= itemsPerView) return;
-    scrollTo(0);
+    if (!inView || totalSlides <= 1) return;
     const timer = setInterval(() => {
-      setCurrent((c) => {
-        const nextVal = c >= maxIndex ? 0 : c + 1;
-        scrollTo(nextVal);
-        return nextVal;
+      setPage((p) => {
+        const nextP = p >= totalPages - 1 ? 0 : p + 1;
+        scrollToPage(nextP);
+        return nextP;
       });
     }, 4000);
     return () => clearInterval(timer);
-  }, [inView, maxIndex, totalSlides, scrollTo]);
+  }, [inView, totalSlides, totalPages, scrollToPage]);
 
   if (!images || images.length === 0) return null;
 
@@ -155,12 +97,12 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
         <div className="relative select-none">
           <div
             ref={containerRef}
-            className={`flex gap-4 overflow-x-hidden ${dragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            className="flex gap-4 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing snap-x snap-mandatory"
+            style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerLeave={onPointerUp}
-            style={{ touchAction: 'pan-y' }}
           >
             {images.map((item, i) => (
               <motion.div
@@ -168,7 +110,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 initial={{ opacity: 0, y: 25, scale: 0.95 }}
                 animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.04, ease: [0.25, 0.1, 0.25, 1] }}
-                className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative pointer-events-auto"
+                className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative pointer-events-auto snap-start"
               >
                 <div
                   className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04] cursor-pointer"
@@ -197,11 +139,11 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
             ))}
           </div>
 
-          {totalSlides > itemsPerView && (
+          {totalPages > 1 && (
             <div className="flex items-center justify-center gap-3 mt-6">
               <button
                 onClick={prev}
-                disabled={current === 0}
+                disabled={page === 0}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60">
@@ -210,14 +152,12 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
               </button>
 
               <div className="flex gap-2">
-                {Array.from({ length: Math.ceil(totalSlides / itemsPerView) }).map((_, i) => (
+                {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => goToPage(i)}
+                    onClick={() => scrollToPage(i)}
                     className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                      current >= i * itemsPerView && current < (i + 1) * itemsPerView
-                        ? 'bg-primary w-4'
-                        : 'bg-white/15 hover:bg-white/30'
+                      page === i ? 'bg-primary w-4' : 'bg-white/15 hover:bg-white/30'
                     }`}
                   />
                 ))}
@@ -225,7 +165,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
 
               <button
                 onClick={next}
-                disabled={current >= maxIndex}
+                disabled={page >= totalPages - 1}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60">
@@ -239,3 +179,4 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     </section>
   );
 }
+
