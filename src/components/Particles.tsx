@@ -41,14 +41,14 @@ export default function Particles() {
     };
 
     const initStars = () => {
-      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 5000), 250);
+      const count = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 6000), 180);
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 1.5 + 0.2,
-        opacity: Math.random() * 0.5 + 0.1,
-        speed: Math.random() * 0.02 + 0.003,
-        hue: Math.random() > 0.9 ? (Math.random() > 0.5 ? 260 : 42) : 0,
+        size: Math.random() * 1.2 + 0.2,
+        opacity: Math.random() * 0.4 + 0.08,
+        speed: Math.random() * 0.015 + 0.002,
+        hue: Math.random() > 0.92 ? (Math.random() > 0.5 ? 260 : 42) : 0,
       }));
     };
 
@@ -118,20 +118,25 @@ export default function Particles() {
     resize();
     initStars();
 
-    const shootingInterval = setInterval(() => {
-      if (Math.random() > 0.6) spawnShootingStar();
-    }, 4000);
+    let shootingInterval: ReturnType<typeof setInterval> | undefined;
 
-    animationId = requestAnimationFrame(draw);
+    const startAfter = setTimeout(() => {
+      shootingInterval = setInterval(() => {
+        if (Math.random() > 0.6) spawnShootingStar();
+      }, 4000);
 
-    window.addEventListener('resize', () => {
-      resize();
-      initStars();
-    });
+      animationId = requestAnimationFrame(draw);
+
+      window.addEventListener('resize', () => {
+        resize();
+        initStars();
+      });
+    }, 100);
 
     return () => {
       cancelAnimationFrame(animationId);
-      clearInterval(shootingInterval);
+      clearTimeout(startAfter);
+      if (shootingInterval) clearInterval(shootingInterval);
       window.removeEventListener('resize', resize);
     };
   }, []);
