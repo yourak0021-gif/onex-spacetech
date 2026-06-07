@@ -20,9 +20,9 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const scrollToPage = useCallback((p: number) => {
     const container = containerRef.current;
     if (!container) return;
-    const first = container.children[p * itemsPerView] as HTMLElement;
-    if (!first) return;
-    first.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    const child = container.children[p * itemsPerView] as HTMLElement;
+    if (!child) return;
+    container.scrollTo({ left: child.offsetLeft - (p === 0 ? 4 : 12), behavior: 'smooth' });
     setPage(p);
   }, []);
 
@@ -52,11 +52,11 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     const container = containerRef.current;
     if (container) {
       container.style.scrollBehavior = 'smooth';
-      const idx = Math.round(container.scrollLeft / (container.clientWidth / itemsPerView));
-      const p = Math.max(0, Math.min(Math.floor(idx / itemsPerView), totalPages - 1));
-      scrollToPage(p);
+      const snapIdx = Math.round(container.scrollLeft / (container.clientWidth * 0.95));
+      const p = Math.max(0, Math.min(Math.floor(snapIdx / itemsPerView), totalPages - 1));
+      setPage(p);
     }
-  }, [totalPages, scrollToPage]);
+  }, [totalPages]);
 
   useEffect(() => {
     if (!inView || totalSlides <= 1) return;
