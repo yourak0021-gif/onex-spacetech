@@ -3,7 +3,11 @@ import path from 'path';
 import rawContent from '../../content.json';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const CACHE_TTL = 60_000;
 const contentPath = path.resolve(process.cwd(), 'content.json');
+
+let cached: SiteContent | null = null;
+let lastCacheTime = 0;
 
 export interface GalleryItem {
   url: string;
@@ -60,23 +64,9 @@ export interface SiteContent {
   memberLastUpdate: number | null;
   memberNextUpdate: number | null;
   topMembers: TopMember[];
-  about: {
-    title: string;
-    description: string;
-    mission: string;
-    vision: string;
-  };
-  projectInfo: {
-    title: string;
-    description: string;
-    value: number;
-    lastUpdate: number | null;
-    nextUpdate: number | null;
-  };
-  inspirational: {
-    quote: string;
-    author: string;
-  };
+  about: { title: string; description: string; mission: string; vision: string };
+  projectInfo: { title: string; description: string; value: number; lastUpdate: number | null; nextUpdate: number | null };
+  inspirational: { quote: string; author: string };
   services: Service[];
   partners: Partner[];
   gallery: GalleryItem[];
@@ -87,16 +77,29 @@ export interface SiteContent {
   adminPassword: string;
 }
 
+function deepClone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export async function getContent(): Promise<SiteContent> {
+  const now = Date.now();
+  if (cached && now - lastCacheTime < CACHE_TTL) {
+    return deepClone(cached);
+  }
   try {
     if (fs.existsSync(contentPath)) {
       const stat = fs.statSync(contentPath);
       if (stat.size > MAX_FILE_SIZE) throw new Error('File too large');
       const raw = fs.readFileSync(contentPath, 'utf-8');
-      return JSON.parse(raw);
+      cached = JSON.parse(raw);
+      lastCacheTime = now;
+      return deepClone(cached!);
     }
   } catch {}
-  return JSON.parse(JSON.stringify(rawContent)) as unknown as SiteContent;
+  const fallback = JSON.parse(JSON.stringify(rawContent)) as unknown as SiteContent;
+  cached = fallback;
+  lastCacheTime = now;
+  return fallback;
 }
 
 export async function saveContent(content: SiteContent): Promise<void> {
@@ -104,8 +107,10 @@ export async function saveContent(content: SiteContent): Promise<void> {
     const tmp = contentPath + '.tmp';
     fs.writeFileSync(tmp, JSON.stringify(content, null, 2), 'utf-8');
     fs.renameSync(tmp, contentPath);
+    cached = content;
+    lastCacheTime = Date.now();
   } catch {
-    // Read-only filesystem (e.g. Vercel serverless) — silently skip
+    // Read-only filesystem — silently skip
   }
 }
 
@@ -115,8 +120,7 @@ export async function incrementProjectValue(content: SiteContent): Promise<SiteC
     const increment = Math.floor(Math.random() * 9999001) + 10000;
     content.projectInfo.value = (content.projectInfo.value || 0) + increment;
     content.projectInfo.lastUpdate = now;
-    const nextInterval = Math.floor(Math.random() * 3600001) + 3600000;
-    content.projectInfo.nextUpdate = now + nextInterval;
+    content.projectInfo.nextUpdate = now + Math.floor(Math.random() * 3600001) + 3600000;
     await saveContent(content);
   }
   return content;
