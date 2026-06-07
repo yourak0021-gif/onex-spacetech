@@ -1,11 +1,20 @@
 import fs from 'fs';
 import path from 'path';
-import { kv } from '@vercel/kv';
+import type { VercelKV } from '@vercel/kv';
 
 const contentPath = path.join(process.cwd(), 'content.json');
 const KV_KEY = 'site_content';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const isKvConfigured = () => !!process.env.KV_URL || !!process.env.KV_REST_API_URL;
+
+async function getKv(): Promise<VercelKV | null> {
+  try {
+    const { kv } = await import('@vercel/kv');
+    return kv;
+  } catch {
+    return null;
+  }
+}
 
 export interface GalleryItem {
   url: string;
@@ -128,8 +137,11 @@ function getDefaultContent(): SiteContent {
 export async function getContent(): Promise<SiteContent> {
   if (isKvConfigured()) {
     try {
-      const data = await kv.get<SiteContent>(KV_KEY);
-      if (data) return data;
+      const kvs = await getKv();
+      if (kvs) {
+        const data = await kvs.get<SiteContent>(KV_KEY);
+        if (data) return data;
+      }
     } catch {}
   }
   try {
@@ -145,8 +157,11 @@ export async function getContent(): Promise<SiteContent> {
 export async function saveContent(content: SiteContent): Promise<void> {
   if (isKvConfigured()) {
     try {
-      await kv.set(KV_KEY, content);
-      return;
+      const kvs = await getKv();
+      if (kvs) {
+        await kvs.set(KV_KEY, content);
+        return;
+      }
     } catch {}
   }
   const tmp = contentPath + '.tmp';
