@@ -14,3 +14,7 @@ export function checkRateLimit(key: string, maxAttempts = 5, windowMs = 60000): 
   entry.count++;
   return true;
 }
+
+export function resetRateLimit(key: string): void {
+  attempts.delete(key);
+}

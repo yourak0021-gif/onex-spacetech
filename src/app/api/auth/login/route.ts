@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getContent, saveContent } from '@/lib/content';
 import { hashPassword, verifyPassword, setAuthCookie } from '@/lib/auth';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 import { validateOrigin } from '@/lib/origin-check';
 import { sanitizeString } from '@/lib/validation';
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     }
 
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
-    if (!checkRateLimit(`login:${ip}`, 5, 60000)) {
+    if (!checkRateLimit(`login:${ip}`, 15, 120000)) {
       return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 });
     }
 
@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       content.adminPassword = await hashPassword(password);
       await saveContent(content);
       await setAuthCookie();
+      resetRateLimit(`login:${ip}`);
       return NextResponse.json({ success: true });
     }
 
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
     }
 
     await setAuthCookie();
+    resetRateLimit(`login:${ip}`);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });

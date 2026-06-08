@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getContent, saveContent } from '@/lib/content';
 import { hashPassword, verifyPassword } from '@/lib/auth';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit, resetRateLimit } from '@/lib/rate-limit';
 import { validateOrigin } from '@/lib/origin-check';
 import { sanitizeString } from '@/lib/validation';
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     }
 
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
-    if (!checkRateLimit(`privacy:${ip}`, 5, 60000)) {
+    if (!checkRateLimit(`privacy:${ip}`, 15, 120000)) {
       return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 });
     }
 
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     if (!content.privacyKey) {
       content.privacyKey = await hashPassword(key);
       await saveContent(content);
+      resetRateLimit(`privacy:${ip}`);
       return NextResponse.json({ success: true });
     }
 
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid privacy key' }, { status: 401 });
     }
 
+    resetRateLimit(`privacy:${ip}`);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
