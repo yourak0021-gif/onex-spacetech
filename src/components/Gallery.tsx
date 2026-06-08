@@ -7,7 +7,6 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [page, setPage] = useState(0);
-  const [lightbox, setLightbox] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -120,8 +119,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
                 }}
               >
                 <div
-                  className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04] cursor-pointer"
-                  onClick={() => setLightbox(i)}
+                  className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04]"
                 >
                   <div
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -180,44 +178,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
         </div>
       </div>
 
-      {lightbox !== null && (
-        <div
-          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors z-10"
-            aria-label="Close"
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-          <div className="relative max-w-5xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
-            <div
-              className="w-full h-full min-h-[50vh] bg-cover bg-center rounded-2xl"
-              style={{ backgroundImage: `url(${images[lightbox].url})` }}
-            />
-            {images[lightbox].description && (
-              <p className="text-white/60 text-sm mt-4 text-center font-light">{images[lightbox].description}</p>
-            )}
-            <div className="flex items-center justify-center gap-4 mt-4">
-              <button
-                onClick={() => setLightbox(lightbox > 0 ? lightbox - 1 : images.length - 1)}
-                className="p-2 rounded-full glass hover:bg-white/5 transition-all"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60"><path d="M12 4l-6 6 6 6"/></svg>
-              </button>
-              <span className="text-xs text-white/40">{lightbox + 1} / {images.length}</span>
-              <button
-                onClick={() => setLightbox(lightbox < images.length - 1 ? lightbox + 1 : 0)}
-                className="p-2 rounded-full glass hover:bg-white/5 transition-all"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/60"><path d="M8 4l6 6-6 6"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </section>
   );
 }

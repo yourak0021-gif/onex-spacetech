@@ -35,9 +35,9 @@
   "projectInfo": {
     "title": "Project Ecosystem Value",
     "description": "The aggregate value of all active projects, investments, and digital assets within our community ecosystem. This figure represents the community wealth we are building together — every deployment, every tournament, every line of code, every design. It grows as we grow.",
-    "value": 9848716231,
-    "lastUpdate": 1780835994556,
-    "nextUpdate": 1780842035990
+    "value": 9848908539,
+    "lastUpdate": 1780891509044,
+    "nextUpdate": 1780897233099
   },
   "inspirational": {
     "quote": "We don't just build projects. We build the future — one deployment, one tournament, one design at a time.",
@@ -5254,9 +5254,9 @@
   "stats": {
     "members": 19867,
     "services": 610,
-    "projects": 387132,
-    "projectsLastUpdate": 1780835994565,
-    "projectsNextUpdate": 1780839594565,
+    "projects": 387176,
+    "projectsLastUpdate": 1780891509048,
+    "projectsNextUpdate": 1780895109048,
     "events": 187
   },
   "adminPassword": "$2a$12$QaPmLgcPrwxYd5osXJOQo..1pWCTw694DZximfWRdFiKrStpz4SaO",
