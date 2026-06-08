@@ -4317,112 +4317,44 @@
   ],
   "gallery": [
     {
-      "url": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
-      "description": "Earth observation satellite — global monitoring network"
+      "url": "/images/gallery/nasa-hubble-space-telescope-MT0jGXhPs_U-unsplash.jpg",
+      "description": "Hubble deep field — capturing the early universe"
     },
     {
-      "url": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
-      "description": "Advanced microchip fabrication for space-grade hardware"
+      "url": "/images/gallery/nasa-hubble-space-telescope-WmbePYToF6c-unsplash.jpg",
+      "description": "Lagoon Nebula — stellar nursery in stunning detail"
     },
     {
-      "url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
-      "description": "Cybersecurity operations center — 24/7 threat monitoring"
+      "url": "/images/gallery/nasa-hubble-space-telescope-xp_e2JVgSuE-unsplash.jpg",
+      "description": "Pillars of Creation — iconic star-forming region"
     },
     {
-      "url": "https://images.unsplash.com/photo-1561736778-92e52a7769ef?w=800&q=80",
-      "description": "Next-gen launch vehicle — propulsion system test"
+      "url": "/images/gallery/nasa-hubble-space-telescope-b53S0fPDPm8-unsplash.jpg",
+      "description": "Sombrero Galaxy — edge-on spiral in Virgo"
     },
     {
-      "url": "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=800&q=80",
-      "description": "AI-driven orbital debris tracking and collision avoidance"
+      "url": "/images/gallery/nasa-hubble-space-telescope-WMsPGiDM9GQ-unsplash.jpg",
+      "description": "Cartwheel Galaxy — ring galaxy after collision"
     },
     {
-      "url": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
-      "description": "Annual SpaceTech summit — 2000+ attendees global"
+      "url": "/images/gallery/nasa-hubble-space-telescope-wHdh3cM1_SM-unsplash.jpg",
+      "description": "Saturn's rings — seasonal changes captured from orbit"
     },
     {
-      "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
-      "description": "Data center expansion — Tier IV facility, 10 PB capacity"
+      "url": "/images/gallery/nasa-hubble-space-telescope-bHlNze4Ulf4-unsplash.jpg",
+      "description": "Orion Nebula — closest massive star nursery"
     },
     {
-      "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-      "description": "Real-time analytics dashboard for mission control"
+      "url": "/images/gallery/evan-murphy-YQFJkPDIfsM-unsplash.jpg",
+      "description": "Star trails over observatory dome — long-exposure magic"
     },
     {
-      "url": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80",
-      "description": "Full-stack development squad — 40+ concurrent projects"
+      "url": "/images/gallery/leandra-rieger-wk966Ouqces-unsplash.jpg",
+      "description": "Milky Way arching over desert — night sky panorama"
     },
     {
-      "url": "https://images.unsplash.com/photo-1454789548928-9efd52dc4031?w=800&q=80",
-      "description": "Deep space network — communication array calibration"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800&q=80",
-      "description": "Research outpost — high-altitude balloon launch campaign"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1451186859696-371d9477be93?w=800&q=80",
-      "description": "Satellite constellation deployment — LEO phase 3 complete"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80",
-      "description": "Community hackathon — 72 hours of breakthrough innovation"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
-      "description": "Cloud infrastructure migration — 99.99% uptime achieved"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
-      "description": "Open-source contribution drive — 500+ repos across GitHub"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80",
-      "description": "Machine learning model training — distributed GPU cluster"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?w=800&q=80",
-      "description": "High-performance computing cluster — 10 TFLOPS sustained"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&q=80",
-      "description": "International Space Station — experiment integration"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
-      "description": "Quantum computing simulation — 50-qubit benchmark test"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
-      "description": "Team collaboration hub — decentralized remote operations"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
-      "description": "Agile development workshop — cross-team knowledge share"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1520085601670-ee14aa5fa3e8?w=800&q=80",
-      "description": "Autonomous drone swarm — coordinated flight test"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1537498425277-c283d32ef9db?w=800&q=80",
-      "description": "Blockchain-based data integrity — immutable audit trail"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
-      "description": "Strategic planning session — roadmap to 2030 unveiled"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&q=80",
-      "description": "Cross-team collaboration — 15 departments synchronized"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
-      "description": "Community workshop — hands-on training for 500+ members"
-    },
-    {
-      "url": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
-      "description": "IoT satellite ground station — real-time data relay"
+      "url": "/images/gallery/photo-1454789548928-9efd52dc4031.avif",
+      "description": "Solar flare eruption — coronal mass ejection in progress"
     }
   ],
   "courses": [
