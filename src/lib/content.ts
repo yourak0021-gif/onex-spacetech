@@ -3,7 +3,7 @@ import path from 'path';
 import rawContent from '../../content.json';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const CACHE_TTL = 60_000;
+const CACHE_TTL = 2_000;
 const contentPath = path.resolve(process.cwd(), 'content.json');
 
 let cached: SiteContent | null = null;
