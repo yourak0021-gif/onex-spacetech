@@ -1,34 +1,30 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import type { Service } from '@/types/content';
 
 const SvgIcon = ({ name, className = 'text-primary/50' }: { name: string; className?: string }) => {
   const cn = `shrink-0 ${className}`;
   switch (name) {
-    case 'code': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
-    case 'brain': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 4.5-3 5.7V20H8v-5.3C6.2 13.5 5 11.4 5 9a7 7 0 0 1 7-7z"/></svg>;
-    case 'shield': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
-    case 'server': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>;
-    case 'palette': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-10-10-10z"/></svg>;
-    case 'video': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>;
-    case 'cube': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>;
-    case 'file': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>;
-    case 'bullhorn': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 8l-6-3v14l6-3V8z"/><path d="M6 12h4"/><circle cx="6" cy="14" r="3"/></svg>;
-    case 'briefcase': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>;
-    case 'users': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-    case 'chart': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
-    case 'education': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>;
-    case 'gamepad': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 13h2M17 11h2"/></svg>;
-    case 'globe': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
-    case 'rocket': return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
-    default: return <svg className={cn} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>;
+    case 'code': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+    case 'brain': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 4.5-3 5.7V20H8v-5.3C6.2 13.5 5 11.4 5 9a7 7 0 0 1 7-7z"/></svg>;
+    case 'shield': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+    case 'server': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>;
+    case 'palette': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-1 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-10-10-10z"/></svg>;
+    case 'video': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>;
+    case 'cube': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>;
+    case 'file': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>;
+    case 'bullhorn': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M20 8l-6-3v14l6-3V8z"/><path d="M6 12h4"/><circle cx="6" cy="14" r="3"/></svg>;
+    case 'briefcase': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>;
+    case 'users': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+    case 'chart': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+    case 'education': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>;
+    case 'gamepad': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 13h2M17 11h2"/></svg>;
+    case 'globe': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
+    case 'rocket': return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>;
+    default: return <svg className={cn} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>;
   }
 };
-
-const ServiceDot = () => (
-  <span className="w-1.5 h-1.5 rounded-full bg-primary/30 shrink-0" />
-);
 
 function getCategoryIcon(category: string): string {
   const cat = category.toLowerCase();
@@ -47,19 +43,14 @@ function getCategoryIcon(category: string): string {
   if (cat.includes('global') || cat.includes('network')) return 'globe';
   if (cat.includes('space') || cat.includes('aero') || cat.includes('astro')) return 'rocket';
   if (cat.includes('test') || cat.includes('qa') || cat.includes('quality')) return 'shield';
-  if (cat.includes('social')) return 'users';
   return 'code';
-}
-
-interface GroupedServices {
-  [category: string]: Service[];
 }
 
 export default function Services({ services }: { services: Service[] }) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   const grouped = useMemo(() => {
-    const map: GroupedServices = {};
+    const map: Record<string, Service[]> = {};
     services.forEach((s) => {
       if (!map[s.category]) map[s.category] = [];
       map[s.category].push(s);
@@ -67,9 +58,7 @@ export default function Services({ services }: { services: Service[] }) {
     return map;
   }, [services]);
 
-  const categories = useMemo(() => {
-    return Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b));
-  }, [grouped]);
+  const categories = useMemo(() => Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b)), [grouped]);
 
   if (!services || services.length === 0) return null;
 
@@ -89,7 +78,7 @@ export default function Services({ services }: { services: Service[] }) {
           </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {categories.map(([category, items], catIdx) => {
             const isOpen = openCategory === category;
             const catIcon = getCategoryIcon(category);
@@ -97,7 +86,7 @@ export default function Services({ services }: { services: Service[] }) {
             return (
               <div
                 key={category}
-                className="glass rounded-xl border border-white/[0.04] overflow-hidden card-glow animate-[fadeIn_0.4s_ease_forwards]"
+                className="glass rounded-xl border border-white/[0.04] overflow-hidden card-glow transition-all duration-300 hover:border-primary/[0.06] animate-[fadeSlideUp_0.4s_ease_forwards]"
                 style={{ animationDelay: `${catIdx * 0.03}s`, opacity: 0 }}
               >
                 <button
@@ -105,7 +94,9 @@ export default function Services({ services }: { services: Service[] }) {
                   className="w-full flex items-center justify-between px-4 md:px-5 py-3.5 md:py-4 text-left hover:bg-white/[0.015] transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <SvgIcon name={catIcon} />
+                    <div className="p-2 rounded-lg bg-primary/[0.06] border border-primary/[0.06]">
+                      <SvgIcon name={catIcon} className="text-primary/60" />
+                    </div>
                     <div>
                       <h3 className="text-sm font-medium text-white/80">{category}</h3>
                       <p className="text-[11px] text-white/20 mt-0.5">{items.length} services</p>
@@ -113,14 +104,14 @@ export default function Services({ services }: { services: Service[] }) {
                   </div>
                   <svg
                     width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                    className={`text-white/15 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                    className={`text-white/20 transition-all duration-300 ${isOpen ? 'rotate-180 text-primary/40' : ''}`}
                   >
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </button>
 
                 <div
-                  className={`overflow-hidden transition-all duration-250 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
                 >
                   <div className="px-4 md:px-5 pb-4">
                     <div className="border-t border-white/[0.03] pt-3">
@@ -128,9 +119,9 @@ export default function Services({ services }: { services: Service[] }) {
                         {items.map((service) => (
                           <div
                             key={service.id}
-                            className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-white/[0.02] transition-colors group"
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-white/[0.02] hover:border hover:border-primary/[0.04] transition-all duration-200 group"
                           >
-                            <ServiceDot />
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary/30 shrink-0 group-hover:bg-primary/60 transition-colors" />
                             <div className="min-w-0">
                               <div className="text-[13px] text-white/60 group-hover:text-white/80 transition-colors truncate">
                                 {service.title}
