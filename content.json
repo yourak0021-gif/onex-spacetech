@@ -5183,11 +5183,12 @@
     "github": "",
     "twitter": ""
   },
-  "contactInfo": {
-    "email": "contact@onex.space",
-    "location": "OneX SpaceTechnologies Pvt. Ltd., Innovation Hub",
-    "website": "www.onex.space"
-  },
+    "contactInfo": {
+      "email": "contact@onex.space",
+      "location": "OneX SpaceTechnologies Pvt. Ltd., Innovation Hub",
+      "website": "www.onex.space"
+    },
+    "privacyKey": "",
   "stats": {
     "members": 19867,
     "services": 610,

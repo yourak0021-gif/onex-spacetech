@@ -6,7 +6,7 @@ import { validateOrigin } from '@/lib/origin-check';
 import { sanitizeString, isValidObject, isValidNumber, sanitizeHtml, ALLOWED_CONTENT_FIELDS } from '@/lib/validation';
 
 function stripContent(content: SiteContent) {
-  const { adminPassword, memberLastUpdate, memberNextUpdate, ...publicContent } = content;
+  const { adminPassword, privacyKey, memberLastUpdate, memberNextUpdate, ...publicContent } = content;
   if (publicContent.stats) {
     delete (publicContent.stats as any).projectsLastUpdate;
     delete (publicContent.stats as any).projectsNextUpdate;

@@ -76,6 +76,7 @@ export interface SiteContent {
   contactInfo: { email: string; location: string; website: string };
   stats: { members: number; services: number; projects: number; projectsLastUpdate: number | null; projectsNextUpdate: number | null; events: number };
   adminPassword: string;
+  privacyKey: string;
 }
 
 function deepClone<T>(obj: T): T {
