@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-interface ProjectInfo { title: string; description: string; value: number; }
+interface ProjectInfo {
+  title: string;
+  description: string;
+  value: number;
+}
 
 export default function ProjectValue({ projectInfo }: { projectInfo: ProjectInfo }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,8 +33,12 @@ export default function ProjectValue({ projectInfo }: { projectInfo: ProjectInfo
     let current = startValue;
     const timer = setInterval(() => {
       current += increment;
-      if (current >= targetValue) { setDisplayValue(targetValue); clearInterval(timer); }
-      else { setDisplayValue(Math.floor(current)); }
+      if (current >= targetValue) {
+        setDisplayValue(targetValue);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(current));
+      }
     }, duration / steps);
     return () => clearInterval(timer);
   }, [inView, projectInfo.value]);
@@ -42,7 +50,7 @@ export default function ProjectValue({ projectInfo }: { projectInfo: ProjectInfo
         <div className="text-center opacity-0 animate-[fadeSlideUp_0.6s_ease_forwards]">
           <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] text-[11px] text-white/25 uppercase tracking-[0.3em] font-light mb-6">
             <span className="inline-flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500/60 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
               Live Tracking
             </span>
           </span>
@@ -52,16 +60,16 @@ export default function ProjectValue({ projectInfo }: { projectInfo: ProjectInfo
           </h2>
 
           <div className="relative inline-block my-6 opacity-0 animate-[fadeSlideUp_0.5s_0.15s_ease_forwards]">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/5 rounded-3xl blur-3xl" />
-            <div className="relative glass-premium rounded-3xl px-6 md:px-10 py-7 md:py-8 border border-primary/[0.06]">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-2xl blur-2xl" />
+            <div className="relative glass rounded-2xl px-5 md:px-8 py-6 md:py-7 border border-white/[0.04]">
               <div className="flex items-center justify-center gap-3">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-green-500/60"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-green-500/50"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                 <span className="text-2xl sm:text-4xl md:text-6xl font-bold tabular-nums tracking-tight">
                   <span className="text-white/30">$</span>
-                  <span className="text-gradient-subtle">{displayValue.toLocaleString()}</span>
+                  <span className="text-white">{displayValue.toLocaleString()}</span>
                 </span>
               </div>
-              <div className="mt-5 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+              <div className="mt-4 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
             </div>
           </div>
 

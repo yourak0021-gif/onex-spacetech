@@ -49,7 +49,7 @@ function MemberCard({ member, index }: { member: TopMember; index: number }) {
         transitionDelay: `${index * 0.1}s`,
         transitionTimingFunction: 'ease-out',
       }}
-      className="glass rounded-xl p-5 md:p-6 text-center border border-white/[0.04] group cursor-default card-glow hover:border-primary/[0.08] transition-all duration-300"
+      className="glass rounded-xl p-5 md:p-6 text-center border border-white/[0.04] group cursor-default"
     >
       <div
         className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 border border-white/[0.06] flex items-center justify-center text-lg font-semibold text-white/70 shadow-lg"

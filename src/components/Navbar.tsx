@@ -44,7 +44,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 animate-[navSlideIn_0.6s_ease_forwards] ${
         scrolled
-          ? 'bg-[#06060f]/80 backdrop-blur-2xl border-b border-white/[0.03] shadow-[0_0_30px_rgba(107,76,230,0.03)]'
+          ? 'bg-[#06060f]/80 backdrop-blur-2xl border-b border-white/[0.03] shadow-[0_1px_0_0_rgba(255,255,255,0.02)]'
           : 'bg-transparent'
       }`}
     >

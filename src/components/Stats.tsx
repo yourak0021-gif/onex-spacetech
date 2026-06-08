@@ -43,8 +43,8 @@ function Counter({ target, suffix = '', label, icon }: { target: number; suffix?
   return (
     <div ref={ref} className="text-center p-4 md:p-6 opacity-0 animate-[fadeSlideUp_0.6s_ease_forwards]">
       <div className="text-xl text-white/20 mb-3 flex justify-center">{icon}</div>
-      <div className="text-3xl md:text-5xl font-bold mb-1.5 tabular-nums tracking-tight">
-        <span className="text-gradient-subtle">{count.toLocaleString()}{suffix}</span>
+      <div className="text-3xl md:text-4xl font-bold text-white mb-1.5 tabular-nums tracking-tight">
+        {count.toLocaleString()}{suffix}
       </div>
       <div className="text-[11px] text-white/25 uppercase tracking-[0.25em] font-light">{label}</div>
     </div>
@@ -92,7 +92,7 @@ export default function Stats({ memberCount, stats }: StatsProps) {
           {statItems.map((item, i) => (
             <div
               key={item.label}
-              className="glass rounded-xl border border-white/[0.04] hover:border-primary/[0.12] transition-all duration-500 card-glow hover:animate-glow-pulse opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]"
+              className="glass rounded-xl border border-white/[0.04] hover:border-primary/[0.08] transition-all duration-500 card-glow opacity-0 animate-[fadeSlideUp_0.4s_ease_forwards]"
               style={{ animationDelay: `${i * 0.08}s` }}
             >
               <Counter target={item.target} label={item.label} icon={item.icon} />
