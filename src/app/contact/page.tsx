@@ -11,7 +11,7 @@ export default async function ContactPage() {
   return (
     <>
       <Navbar />
-      <ContactContent communityName={content.communityName} socialLinks={content.socialLinks} tagline={content.tagline} />
+      <ContactContent communityName={content.communityName} socialLinks={content.socialLinks} tagline={content.tagline} contactInfo={content.contactInfo} />
       <Footer communityName={content.communityName} socialLinks={content.socialLinks} />
     </>
   );

@@ -81,6 +81,11 @@ export interface SiteContent {
     github: string;
     twitter: string;
   };
+  contactInfo: {
+    email: string;
+    location: string;
+    website: string;
+  };
   stats: {
     members: number;
     services: number;

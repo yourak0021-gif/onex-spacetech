@@ -35,9 +35,9 @@
   "projectInfo": {
     "title": "Project Ecosystem Value",
     "description": "The aggregate value of all active projects, investments, and digital assets within our community ecosystem. This figure represents the community wealth we are building together — every deployment, every tournament, every line of code, every design. It grows as we grow.",
-    "value": 28701928301,
-    "lastUpdate": 1780891509044,
-    "nextUpdate": 1780897233099
+    "value": 28707513780,
+    "lastUpdate": 1780897756100,
+    "nextUpdate": 1780904074647
   },
   "inspirational": {
     "quote": "We don't just build projects. We build the future — one deployment, one tournament, one design at a time.",
@@ -5182,6 +5182,11 @@
     "youtube": "",
     "github": "",
     "twitter": ""
+  },
+  "contactInfo": {
+    "email": "contact@onex.space",
+    "location": "OneX SpaceTechnologies Pvt. Ltd., Innovation Hub",
+    "website": "www.onex.space"
   },
   "stats": {
     "members": 19867,

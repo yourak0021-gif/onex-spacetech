@@ -45,5 +45,5 @@ export function stripScriptTags(value: string): string {
 export const ALLOWED_CONTENT_FIELDS = new Set([
   'communityName', 'tagline', 'memberCount', 'about', 'projectInfo',
   'inspirational', 'topMembers', 'services', 'gallery', 'socialLinks',
-  'stats', 'courses', 'certificates', 'partners',
+  'stats', 'courses', 'certificates', 'partners', 'contactInfo',
 ]);

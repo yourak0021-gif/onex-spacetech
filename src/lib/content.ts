@@ -73,6 +73,7 @@ export interface SiteContent {
   courses: Course[];
   certificates: Certificate[];
   socialLinks: { discord: string; youtube: string; github: string; twitter: string };
+  contactInfo: { email: string; location: string; website: string };
   stats: { members: number; services: number; projects: number; projectsLastUpdate: number | null; projectsNextUpdate: number | null; events: number };
   adminPassword: string;
 }

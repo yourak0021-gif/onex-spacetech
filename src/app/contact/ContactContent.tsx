@@ -7,6 +7,12 @@ interface SocialLinksData {
   twitter: string;
 }
 
+interface ContactInfoData {
+  email: string;
+  location: string;
+  website: string;
+}
+
 const socialIcons = {
   discord: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>,
   youtube: <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>,
@@ -21,13 +27,19 @@ const platforms = [
   { key: 'twitter', icon: socialIcons.twitter, label: 'Twitter / X', color: 'hover:text-[#1DA1F2]', desc: 'Announcements, industry news, and updates.' },
 ];
 
-const contacts = [
-  { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>, label: 'Email', value: 'contact@onex.space', href: 'mailto:contact@onex.space' },
-  { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>, label: 'Location', value: 'OneX SpaceTechnologies Pvt. Ltd., Innovation Hub' },
-  { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>, label: 'Web', value: 'www.onex.space', href: 'https://www.onex.space' },
+const contactIcons = {
+  email: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>,
+  location: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>,
+  web: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+};
+
+const contactFields = [
+  { key: 'email', icon: contactIcons.email, label: 'Email', href: (v: string) => `mailto:${v}` },
+  { key: 'location', icon: contactIcons.location, label: 'Location' },
+  { key: 'website', icon: contactIcons.web, label: 'Web', href: (v: string) => v.startsWith('http') ? v : `https://${v}` },
 ];
 
-export default function ContactContent({ communityName, socialLinks, tagline }: { communityName: string; socialLinks: SocialLinksData; tagline: string }) {
+export default function ContactContent({ communityName, socialLinks, tagline, contactInfo }: { communityName: string; socialLinks: SocialLinksData; tagline: string; contactInfo: ContactInfoData }) {
   const hasAnyLink = Object.values(socialLinks).some(v => v?.trim());
 
   return (
@@ -101,17 +113,21 @@ export default function ContactContent({ communityName, socialLinks, tagline }: 
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4">
-              {contacts.map(c => (
-                <div key={c.label} className="glass rounded-xl p-6 border border-white/[0.04] hover:border-secondary/[0.12] transition-all duration-300">
-                  <div className="text-2xl text-white/30 mb-3">{c.icon}</div>
-                  <h3 className="text-sm font-semibold text-white/80 mb-1">{c.label}</h3>
-                  {c.href ? (
-                    <a href={c.href} className="text-xs text-primary/60 hover:text-primary/80 transition-colors">{c.value}</a>
-                  ) : (
-                    <p className="text-xs text-white/30 font-light">{c.value}</p>
-                  )}
-                </div>
-              ))}
+              {contactFields.map(cf => {
+                const val = contactInfo[cf.key as keyof ContactInfoData];
+                const href = cf.href ? cf.href(val) : undefined;
+                return (
+                  <div key={cf.key} className="glass rounded-xl p-6 border border-white/[0.04] hover:border-secondary/[0.12] transition-all duration-300">
+                    <div className="text-2xl text-white/30 mb-3">{cf.icon}</div>
+                    <h3 className="text-sm font-semibold text-white/80 mb-1">{cf.label}</h3>
+                    {href ? (
+                      <a href={href} className="text-xs text-primary/60 hover:text-primary/80 transition-colors">{val}</a>
+                    ) : (
+                      <p className="text-xs text-white/30 font-light">{val}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
 
