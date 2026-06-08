@@ -5183,21 +5183,21 @@
     "github": "",
     "twitter": ""
   },
-    "contactInfo": {
-      "email": "contact@onex.space",
-      "location": "OneX SpaceTechnologies Pvt. Ltd., Innovation Hub",
-      "website": "www.onex.space"
-    },
-    "privacyKey": "",
+  "contactInfo": {
+    "email": "contact@onex.space",
+    "location": "OneX SpaceTechnologies Pvt. Ltd., Innovation Hub",
+    "website": "www.onex.space"
+  },
+  "privacyKey": "$2a$12$JNBJwqldV75KdvnVJvcoquPa7wrl72jf6VEmV5FG7HEVTN7gFxLn6",
   "stats": {
     "members": 19867,
     "services": 610,
-    "projects": 387220,
-    "projectsLastUpdate": 1780895143327,
-    "projectsNextUpdate": 1780898743327,
+    "projects": 387245,
+    "projectsLastUpdate": 1780898933948,
+    "projectsNextUpdate": 1780902533948,
     "events": 187
   },
-  "adminPassword": "$2a$12$QaPmLgcPrwxYd5osXJOQo..1pWCTw694DZximfWRdFiKrStpz4SaO",
+  "adminPassword": "$2a$12$JNBJwqldV75KdvnVJvcoquPa7wrl72jf6VEmV5FG7HEVTN7gFxLn6",
   "partners": [
     {
       "id": 1,

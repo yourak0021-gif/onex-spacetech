@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getContent, saveContent, incrementProjectValue, incrementProjectsCount, incrementMemberCount, type SiteContent } from '@/lib/content';
 import { isAuthenticated } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
@@ -152,6 +153,9 @@ export async function PATCH(request: Request) {
     }
 
     await saveContent(current);
+    revalidatePath('/');
+    revalidatePath('/contact');
+    revalidatePath('/courses');
     return NextResponse.json(stripContent(current));
   } catch {
     return NextResponse.json({ error: 'Failed to update content' }, { status: 500 });
