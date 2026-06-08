@@ -26,32 +26,27 @@ function StaggerText({ text, className, delay = 0 }: { text: string; className?:
 
   return (
     <span ref={ref} className={className}>
-      {words.map((word, w) => {
-        const chars = word.split('');
-        const wordEl = (
-          <span key={w} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
-            {chars.map((char) => {
-              const idx = charIndex++;
-              return (
-                <span
-                  key={idx}
-                  style={{
-                    display: 'inline-block',
-                    opacity: inView ? 1 : 0,
-                    transform: inView ? 'translateY(0) rotateX(0)' : 'translateY(30px) rotateX(-90deg)',
-                    filter: inView ? 'blur(0px)' : 'blur(4px)',
-                    transition: `all 0.5s ${delay + idx * 0.025}s cubic-bezier(0.22, 1, 0.36, 1)`,
-                  }}
-                >
-                  {char}
-                </span>
-              );
-            })}
-          </span>
-        );
-        if (w < words.length - 1) return (<span key={w} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{wordEl}<span style={{ display: 'inline-block', width: '0.3em' }}>&nbsp;</span></span>);
-        return wordEl;
-      })}
+      {words.map((word, w) => (
+        <span key={w} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+          {word.split('').map((char) => {
+            const idx = charIndex++;
+            return (
+              <span
+                key={idx}
+                style={{
+                  display: 'inline-block',
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? 'translateY(0) rotateX(0)' : 'translateY(30px) rotateX(-90deg)',
+                  filter: inView ? 'blur(0px)' : 'blur(4px)',
+                  transition: `all 0.5s ${delay + idx * 0.025}s cubic-bezier(0.22, 1, 0.36, 1)`,
+                }}
+              >
+                {char}
+              </span>
+            );
+          })}
+        </span>
+      )).reduce((acc, el, i) => i === 0 ? [el] : [...acc, ' ', el], [] as React.ReactNode[])}
     </span>
   );
 }
