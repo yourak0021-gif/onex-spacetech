@@ -1,19 +1,16 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { GalleryItem } from '@/types/content';
 
 export default function Gallery({ images }: { images: GalleryItem[] }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [page, setPage] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeftStart = useRef(0);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setInView(true); observer.unobserve(el); }
@@ -26,66 +23,39 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const totalSlides = images.length;
   const totalPages = Math.max(1, Math.ceil(totalSlides / itemsPerView));
 
-  const scrollToPage = useCallback((p: number) => {
+  const updatePage = () => {
+    const c = containerRef.current;
+    if (!c) return;
+    const idx = Math.round(c.scrollLeft / (c.clientWidth * 0.95));
+    const p = Math.max(0, Math.min(Math.floor(idx / itemsPerView), totalPages - 1));
+    setPage(p);
+  };
+
+  const scrollToPage = (p: number) => {
     const container = containerRef.current;
     if (!container) return;
     const child = container.children[p * itemsPerView] as HTMLElement;
     if (!child) return;
-    container.scrollTo({ left: child.offsetLeft - (p === 0 ? 4 : 12), behavior: 'smooth' });
+    child.scrollIntoView({ behavior: 'smooth', inline: 'start' });
     setPage(p);
-  }, []);
-
-  const next = useCallback(() => scrollToPage(Math.min(page + 1, totalPages - 1)), [page, totalPages, scrollToPage]);
-  const prev = useCallback(() => scrollToPage(Math.max(page - 1, 0)), [page, scrollToPage]);
-
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    isDragging.current = true;
-    startX.current = e.clientX;
-    const container = containerRef.current;
-    if (container) {
-      scrollLeftStart.current = container.scrollLeft;
-      container.style.scrollBehavior = 'auto';
-    }
-  }, []);
-
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDragging.current) return;
-    const dx = startX.current - e.clientX;
-    const container = containerRef.current;
-    if (container) container.scrollLeft = scrollLeftStart.current + dx;
-  }, []);
-
-  const onPointerUp = useCallback(() => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    const container = containerRef.current;
-    if (container) {
-      container.style.scrollBehavior = 'smooth';
-      const snapIdx = Math.round(container.scrollLeft / (container.clientWidth * 0.95));
-      const p = Math.max(0, Math.min(Math.floor(snapIdx / itemsPerView), totalPages - 1));
-      setPage(p);
-    }
-  }, [totalPages]);
+  };
 
   useEffect(() => {
     if (!inView || totalSlides <= 1) return;
     const timer = setInterval(() => {
-      setPage((p) => {
-        const nextP = p >= totalPages - 1 ? 0 : p + 1;
-        scrollToPage(nextP);
-        return nextP;
-      });
+      const nextP = page >= totalPages - 1 ? 0 : page + 1;
+      scrollToPage(nextP);
     }, 4000);
     return () => clearInterval(timer);
-  }, [inView, totalSlides, totalPages, scrollToPage]);
+  }, [inView, totalSlides, totalPages, page]);
 
   if (!images || images.length === 0) return null;
 
   return (
-    <section id="gallery" className="section-padding relative overflow-hidden">
+    <section id="gallery" className="section-padding relative overflow-hidden" ref={sectionRef}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto" ref={ref}>
+      <div className="max-w-7xl mx-auto">
         <div className={`text-center mb-8 md:mb-12 transition-all duration-500 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[15px]'}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] text-[11px] text-white/25 uppercase tracking-[0.3em] font-light mb-5">
             Explore
@@ -98,29 +68,24 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
           </p>
         </div>
 
-        <div className="relative select-none">
+        <div className="relative">
           <div
             ref={containerRef}
-            className="flex gap-4 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing snap-x snap-mandatory"
-            style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}
-            onPointerLeave={onPointerUp}
+            onScroll={updatePage}
+            className="flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory scroll-smooth"
+            style={{ WebkitOverflowScrolling: 'touch' }}
           >
             {images.map((item, i) => (
               <div
                 key={i}
-                className="min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 group relative pointer-events-auto snap-start"
+                className={`min-w-[calc(100%/1.1)] sm:min-w-[calc(50%-8px)] lg:min-w-[calc(33.333%-11px)] shrink-0 snap-start group relative`}
                 style={{
                   opacity: inView ? 1 : 0,
                   transform: inView ? 'translateY(0) scale(1)' : 'translateY(25px) scale(0.95)',
                   transition: `opacity 0.5s ${i * 0.04}s, transform 0.5s ${i * 0.04}s`,
                 }}
               >
-                <div
-                  className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04]"
-                >
+                <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-white/[0.02] border border-white/[0.04]">
                   <div
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url(${item.url})` }}
@@ -147,7 +112,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-3 mt-6">
               <button
-                onClick={prev}
+                onClick={() => scrollToPage(Math.max(page - 1, 0))}
                 disabled={page === 0}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
@@ -167,7 +132,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
               </div>
 
               <button
-                onClick={next}
+                onClick={() => scrollToPage(Math.min(page + 1, totalPages - 1))}
                 disabled={page >= totalPages - 1}
                 className="p-2 rounded-full glass hover:bg-white/5 disabled:opacity-20 transition-all"
               >
@@ -177,8 +142,6 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
           )}
         </div>
       </div>
-
-
     </section>
   );
 }
