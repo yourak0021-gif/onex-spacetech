@@ -63,7 +63,7 @@ export default function Services({ services }: { services: Service[] }) {
   if (!services || services.length === 0) return null;
 
   return (
-    <section id="services" className="section-padding relative">
+    <section id="services" className="section-padding relative scroll-mt-16">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10 md:mb-14 animate-[fadeIn_0.5s_ease_forwards]">

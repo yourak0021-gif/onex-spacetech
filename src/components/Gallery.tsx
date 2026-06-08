@@ -5,12 +5,12 @@ import type { GalleryItem } from '@/types/content';
 
 export default function Gallery({ images }: { images: GalleryItem[] }) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [current, setCurrent] = useState(0);
   const [noTransition, setNoTransition] = useState(true);
   const [offsets, setOffsets] = useState<number[]>([]);
+  const measured = useRef(false);
 
   const total = images.length;
   const itemsPerView = 3;
@@ -29,7 +29,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const slides = [images[total - 1], ...images, images[0]];
 
   useLayoutEffect(() => {
-    if (!inView) return;
+    if (!inView || measured.current) return;
     const container = containerRef.current;
     if (!container) return;
     const children = container.querySelectorAll(':scope > div > div');
@@ -37,8 +37,11 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     const computed: number[] = [];
     children.forEach((child) => computed.push((child as HTMLElement).offsetLeft));
     setOffsets(computed);
-    setNoTransition(false);
-    setCurrent(1);
+    measured.current = true;
+    requestAnimationFrame(() => {
+      setNoTransition(false);
+      setCurrent(1);
+    });
   }, [inView]);
 
   const goTo = useCallback((target: number) => {
@@ -46,35 +49,35 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
     setCurrent(target);
   }, []);
 
+  const slideCount = slides.length;
+
   const next = useCallback(() => {
-    const nextIdx = current + 1;
-    if (nextIdx >= slides.length - 1) {
-      setNoTransition(false);
-      setCurrent(nextIdx);
-      setTimeout(() => {
-        setNoTransition(true);
-        setCurrent(1);
-      }, 500);
-    } else {
-      setNoTransition(false);
-      setCurrent(nextIdx);
-    }
-  }, [current, slides.length]);
+    setCurrent((c: number) => {
+      const nextIdx = c + 1;
+      if (nextIdx >= slideCount - 1) {
+        setTimeout(() => {
+          setNoTransition(true);
+          setCurrent(1);
+        }, 500);
+        return nextIdx;
+      }
+      return nextIdx;
+    });
+  }, [slideCount]);
 
   const prev = useCallback(() => {
-    const prevIdx = current - 1;
-    if (prevIdx <= 0) {
-      setNoTransition(false);
-      setCurrent(prevIdx);
-      setTimeout(() => {
-        setNoTransition(true);
-        setCurrent(slides.length - 2);
-      }, 500);
-    } else {
-      setNoTransition(false);
-      setCurrent(prevIdx);
-    }
-  }, [current, slides.length]);
+    setCurrent((c: number) => {
+      const prevIdx = c - 1;
+      if (prevIdx <= 0) {
+        setTimeout(() => {
+          setNoTransition(true);
+          setCurrent(slideCount - 2);
+        }, 500);
+        return prevIdx;
+      }
+      return prevIdx;
+    });
+  }, [slideCount]);
 
   useEffect(() => {
     if (!inView || total <= 1) return;
@@ -88,7 +91,7 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
   const offsetX = offsets[current] ?? 0;
 
   return (
-    <section id="gallery" className="section-padding relative overflow-hidden" ref={sectionRef}>
+    <section id="gallery" className="section-padding relative overflow-hidden scroll-mt-16" ref={sectionRef}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto">
@@ -107,7 +110,6 @@ export default function Gallery({ images }: { images: GalleryItem[] }) {
         <div className="relative overflow-hidden">
           <div ref={containerRef}>
             <div
-              ref={trackRef}
               className="flex gap-4 will-change-transform"
               style={{
                 transform: `translateX(-${offsetX}px)`,

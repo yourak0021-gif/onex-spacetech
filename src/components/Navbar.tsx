@@ -32,6 +32,10 @@ export default function Navbar() {
 
   const handleClick = (href: string) => {
     setMobileOpen(false);
+    if (href === '/' || href === '#hero') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (href.startsWith('/')) { router.push(href); return; }
     router.push('/' + href);
   };

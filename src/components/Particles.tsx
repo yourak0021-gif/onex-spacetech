@@ -57,15 +57,17 @@ export default function Particles() {
     resize();
     initStars();
 
+    const onResize = () => { resize(); initStars(); };
+
     const startTimer = setTimeout(() => {
       animationId = requestAnimationFrame(draw);
-      window.addEventListener('resize', () => { resize(); initStars(); });
+      window.addEventListener('resize', onResize);
     }, 200);
 
     return () => {
       cancelAnimationFrame(animationId);
       clearTimeout(startTimer);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 

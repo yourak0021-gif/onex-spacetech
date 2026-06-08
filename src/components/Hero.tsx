@@ -46,7 +46,7 @@ function StaggerText({ text, className, delay = 0 }: { text: string; className?:
             );
           })}
         </span>
-      )).reduce((acc, el, i) => i === 0 ? [el] : [...acc, ' ', el], [] as React.ReactNode[])}
+      )).reduce((acc: React.ReactNode[], el, i) => i === 0 ? [el] : [...acc, <span key={`s${i}`} style={{ display: 'inline-block', width: '0.3em' }}>{'\u00A0'}</span>, el], [])}
     </span>
   );
 }
@@ -87,11 +87,11 @@ export default function Hero({ communityName, tagline, inspirational }: HeroProp
         <div className="w-3 h-3 border border-accent/20 rotate-12" />
       </div>
 
-      {/* Orbiting rings */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] animate-orbit" style={{ width: 0, height: 0 }}>
+      {/* Orbiting rings - desktop only to avoid overlap on mobile */}
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] animate-orbit" style={{ width: 0, height: 0 }}>
         <div className="w-3 h-3 rounded-full bg-primary/20 blur-[1px]" />
       </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] animate-orbit-reverse" style={{ width: 0, height: 0 }}>
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] animate-orbit-reverse" style={{ width: 0, height: 0 }}>
         <div className="w-2 h-2 rounded-full bg-secondary/15" />
       </div>
 
@@ -108,7 +108,7 @@ export default function Hero({ communityName, tagline, inspirational }: HeroProp
           </div>
         </div>
 
-        <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 tracking-tight leading-[1.05]">
+        <h1 className="text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 tracking-tight leading-[1.05]">
           <StaggerText text={communityName.replace(' Private', '')} />
           <br />
           <span className="text-white/[0.06] text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-[0.35em]">

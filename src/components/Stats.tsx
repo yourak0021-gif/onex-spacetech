@@ -73,7 +73,7 @@ export default function Stats({ memberCount, stats }: StatsProps) {
   ];
 
   return (
-    <section id="stats" className="section-padding relative">
+    <section id="stats" className="section-padding relative scroll-mt-16">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.01] to-transparent pointer-events-none" />
       <div className="max-w-6xl mx-auto relative" ref={ref}>
         <div className="text-center mb-10 md:mb-14 opacity-0 animate-[fadeSlideUp_0.5s_ease_forwards]">
